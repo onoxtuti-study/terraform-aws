@@ -1,2 +1,2 @@
-# terraform-aws
-A repository for studying terraform
+# terraform + aws 勉強用リポジトリ
+▼参考文献
