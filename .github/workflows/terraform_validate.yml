@@ -1,0 +1,29 @@
+name: Terraform Validate
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  validate:
+    name: Terraformのフォーマット修正 & 構文チェック
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Terraformをセットアップ
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.12.2"
+
+      - name: Terraformを初期化
+        run: terraform init -backend=false
+
+      - name: .tfファイルのフォーマットを統一
+        run: terraform fmt
+
+      - name: .tfの構文チェック
+        run: terraform validate
