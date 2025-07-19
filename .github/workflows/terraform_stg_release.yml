@@ -31,8 +31,8 @@ jobs:
       - name: Terraformを初期化
         run: terraform init
 
-      - name: stg workspaceの作成
-        run: terraform workspace select stg
+      - name: stg workspaceへスイッチ
+        run: terraform workspace new stg
 
       - name: stg環境の構築
         run: terraform apply -auto-approve
