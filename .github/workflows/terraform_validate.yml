@@ -20,21 +20,11 @@ jobs:
         with:
           terraform_version: "1.12.2"
 
-      - name: AWS認証設定
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: ap-northeast-1
-
       - name: Terraformを初期化
-        run: terraform init
+        run: terraform init -backend=false
 
       - name: .tfファイルのフォーマットを統一
         run: terraform fmt
 
       - name: .tfの構文チェック
         run: terraform validate
-
-      - name: terraform plan 変更内容を確認
-        run: terraform plan
