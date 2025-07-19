@@ -28,3 +28,6 @@ jobs:
 
       - name: .tfの構文チェック
         run: terraform validate
+
+      - name: terraform plan 変更内容を確認
+        run: terraform plan
