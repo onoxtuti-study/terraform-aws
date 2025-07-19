@@ -1,4 +1,4 @@
-name: Terraform Apply stg
+name: Terraform Apply prd
 
 on:
   pull_request:
@@ -31,8 +31,8 @@ jobs:
       - name: Terraformを初期化
         run: terraform init
 
-      - name: stg workspaceへスイッチ
+      - name: prd workspaceへスイッチ
         run: terraform workspace select prd
 
-      - name: stg環境の構築
+      - name: prd環境の構築
         run: terraform apply -auto-approve
