@@ -1,0 +1,38 @@
+name: Terraform Apply stg
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types: [closed]
+
+jobs:
+  validate:
+    name: dvelopへのPRがマージされたら起動
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
+
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+      
+      - name: AWS認証設定
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-northeast-1
+
+      - name: Terraformをセットアップ
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.12.2"
+
+      - name: Terraformを初期化
+        run: terraform init
+
+      - name: stg workspaceへスイッチ
+        run: terraform workspace select stg
+
+      - name: stg環境の構築
+        run: terraform apply -auto-approve
