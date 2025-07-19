@@ -34,5 +34,8 @@ jobs:
       - name: stg workspaceへスイッチ
         run: terraform workspace select stg
 
+      - name: terraform plan 変更内容を確認
+        run: terraform plan
+
       - name: stg環境の構築
         run: terraform apply -auto-approve
