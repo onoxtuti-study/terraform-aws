@@ -1,15 +1,8 @@
-resource "aws_vpc" "study" {
-  cidr_block = "10.0.0.0/16"
-  tags = {
-    Name = "onozawa-terraform"
-  }
-}
+module "my_vpc_subnet" {
+  source = "./modules/vpc_subnet"
 
-resource "aws_subnet" "study_dmz_1a" {
-  vpc_id            = aws_vpc.study.id
-  cidr_block        = "10.0.1.0/24"
-  availability_zone = "ap-northeast-1a"
-  tags = {
-    Name = "DMZ_1a"
-  }
+  vpc_cidr_block = terraform.workspace == "stg" ? "10.0.0.0/16" : "11.0.0.0/16"
+  vpc_name = "onozawa-terraform-${terraform.workspace}"
+  subnet_cidr_block = terraform.workspace == "stg" ? "10.0.1.0/24" : "11.0.1.0/24"
+  subnet_name = "DMZ-${terraform.workspace}-1a"
 }
