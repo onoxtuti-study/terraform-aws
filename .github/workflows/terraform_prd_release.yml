@@ -34,5 +34,8 @@ jobs:
       - name: prd workspaceへスイッチ
         run: terraform workspace select prd
 
+      - name: terraform plan 変更内容を確認
+        run: terraform plan
+
       - name: prd環境の構築
         run: terraform apply -auto-approve
