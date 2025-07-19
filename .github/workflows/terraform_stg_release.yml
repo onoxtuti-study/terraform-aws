@@ -31,5 +31,8 @@ jobs:
       - name: Terraformを初期化
         run: terraform init -backend=false
 
+      - name: stg workspaceの作成
+        run: terraform workspace new stg
+
       - name: stg環境の構築
         run: terraform apply -auto-approve
