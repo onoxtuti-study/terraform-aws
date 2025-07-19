@@ -9,7 +9,7 @@ resource "aws_security_group" "bastion" {
     description = "SSH from external"
     from_port   = 22
     to_port     = 22
-    protocol    = "ssh"
+    protocol    = "tcp"
     cidr_blocks = [each.value]
   }
 
