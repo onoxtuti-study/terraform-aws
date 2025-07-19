@@ -21,7 +21,7 @@ jobs:
           terraform_version: "1.12.2"
 
       - name: Terraformを初期化
-        run: terraform init -backend=false
+        run: terraform init
 
       - name: .tfファイルのフォーマットを統一
         run: terraform fmt
