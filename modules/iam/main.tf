@@ -21,3 +21,7 @@ resource "aws_iam_role_policy_attachment" "rl_bastion_attach" {
   policy_arn = each.value
 }
 
+output "profile" {
+  value = aws_iam_role.role.id
+}
+
