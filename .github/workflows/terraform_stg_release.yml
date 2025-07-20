@@ -1,16 +1,13 @@
 name: Terraform Apply stg
 
 on:
-  pull_request:
-    branches:
-      - develop
-    types: [closed]
+  workflow_dispatch:
 
 jobs:
   validate:
-    name: dvelopへのPRがマージされたら起動
+    name: 手動実行
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
 
     steps:
       - name: リポジトリをチェックアウト
