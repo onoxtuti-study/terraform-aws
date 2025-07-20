@@ -2,11 +2,14 @@ name: Terraform Apply stg
 
 on:
   workflow_dispatch:
-
+    inputs:
+      target_branch:
+        description: 'Target branch'
+        required: true
+        default: 'develop'
 jobs:
   validate:
     name: 手動実行
-    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
 
     steps:
