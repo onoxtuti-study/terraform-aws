@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: リポジトリをチェックアウト
+      - name: チェックアウト
         uses: actions/checkout@v4
       
       - name: AWS認証設定
@@ -19,18 +19,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ap-northeast-1
 
-      - name: Terraformをセットアップ
+      - name: Terraformセットアップ
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.12.2"
 
-      - name: Terraformを初期化
+      - name: Terraform初期化
         run: terraform init
 
       - name: stg workspaceへスイッチ
         run: terraform workspace select stg
 
-      - name: terraform plan 変更内容を確認
+      - name: terraform plan
         run: terraform plan
 
       - name: stg環境の構築
