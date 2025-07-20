@@ -1,12 +1,17 @@
 name: Terraform Apply stg
 
 on:
-  workflow_dispatch:
+  on:
+  pull_request:
+    branches:
+      - develop
+    types: [closed]
 
 jobs:
   validate:
     name: 手動実行
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
 
     steps:
       - name: チェックアウト
