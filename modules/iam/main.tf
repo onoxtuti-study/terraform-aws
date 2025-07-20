@@ -17,7 +17,7 @@ resource "aws_iam_role" "role" {
 resource "aws_iam_role_policy_attachment" "rl_bastion_attach" {
   for_each = var.iam_role_policy
 
-  role = each.key
+  role = aws_iam_role.role.name
   policy_arn = each.value
 }
 
