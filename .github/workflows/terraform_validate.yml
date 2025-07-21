@@ -13,7 +13,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: terraform-aws/env/stg
+        working-directory: env/stg
 
     steps:
       - name: リポジトリをチェックアウト
