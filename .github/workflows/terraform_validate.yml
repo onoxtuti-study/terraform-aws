@@ -11,6 +11,10 @@ jobs:
     name: Terraformのフォーマット修正 & 構文チェック
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: env/stg
+
     steps:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v4
