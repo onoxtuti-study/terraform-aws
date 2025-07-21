@@ -27,7 +27,3 @@ resource "aws_security_group_rule" "bastion_ingress" {
   security_group_id = aws_security_group.bastion.id
   description       = "SSH from ${each.value}"
 }
-
-output "bastion_id" {
-  value = aws_security_group.bastion.id
-}

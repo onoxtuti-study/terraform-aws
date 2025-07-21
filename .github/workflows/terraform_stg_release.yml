@@ -12,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
 
+    defaults:
+      run:
+        working-directory: env/stg
+
     steps:
       - name: チェックアウト
         uses: actions/checkout@v4
