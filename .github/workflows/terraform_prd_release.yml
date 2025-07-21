@@ -12,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
 
+    defaults:
+      run:
+        working-directory: env/prd
+
     steps:
       - name: チェックアウト
         uses: actions/checkout@v4
@@ -30,9 +34,6 @@ jobs:
 
       - name: Terraform初期化
         run: terraform init
-
-      - name: prd workspaceへスイッチ
-        run: terraform workspace select prd
 
       - name: terraform plan
         run: terraform plan
