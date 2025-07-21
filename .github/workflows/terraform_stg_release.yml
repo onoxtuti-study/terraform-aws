@@ -35,9 +35,6 @@ jobs:
       - name: Terraform初期化
         run: terraform init
 
-      - name: stg workspaceへスイッチ
-        run: terraform workspace select stg
-
       - name: terraform plan
         run: terraform plan
 
