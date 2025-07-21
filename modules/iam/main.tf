@@ -1,4 +1,4 @@
-data "aws_iam_policy_document" "rl_bastion" {
+data "aws_iam_policy_document" "role" {
     statement {
         effect = "Allow"
 
@@ -12,11 +12,17 @@ data "aws_iam_policy_document" "rl_bastion" {
 }
 resource "aws_iam_role" "role" {
     name               = var.role_name
-    assume_role_policy = data.aws_iam_policy_document.rl_bastion.json
+    assume_role_policy = data.aws_iam_policy_document.role.json
 }
-resource "aws_iam_role_policy_attachment" "rl_bastion_attach" {
-  for_each = var.iam_role_policy
+resource "aws_iam_role_policy_attachment" "role_attach" {
+    count = length(var.customer_role_name)
 
   role = aws_iam_role.role.name
-  policy_arn = each.value
+  policy_arn = lookup(var.iam_role_policy_map, var.customer_role_name[count.index], null)
 }
+
+resource "aws_iam_instance_profile" "role_profile" {
+  name = var.role_name
+  role = aws_iam_role.role.name
+}
+

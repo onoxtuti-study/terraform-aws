@@ -16,6 +16,7 @@ module "first_vpc_subnet" {
 module "bastion_role" {
   source = "../../modules/iam"
   role_name = "RL-bastion-prd"
+  customer_role_name = ["AmazonEC2FullAccess", "AmazonSSMFullAccess"]
 }
 
 #---------------------------------------
