@@ -35,9 +35,6 @@ jobs:
       - name: Terraform初期化
         run: terraform init
 
-      - name: prd workspaceへスイッチ
-        run: terraform workspace select prd
-
       - name: terraform plan
         run: terraform plan
 
