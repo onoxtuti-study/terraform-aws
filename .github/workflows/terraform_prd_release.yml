@@ -12,6 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
 
+    defaults:
+      run:
+        working-directory: terraform-aws/env/prd
+
     steps:
       - name: チェックアウト
         uses: actions/checkout@v4
