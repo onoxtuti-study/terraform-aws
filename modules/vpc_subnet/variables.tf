@@ -1,3 +1,6 @@
+variable "env" {
+  type = string
+}
 variable "vpc_cidr_block_map" {
     default = {
         stg = "10.0.0.0/16"
