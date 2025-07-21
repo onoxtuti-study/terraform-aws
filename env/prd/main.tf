@@ -4,7 +4,7 @@
 # VPC/DMZ Subnet
 #---------------------------------------
 module "first_vpc_subnet" {
-  source = "./modules/vpc_subnet"
+  source = "../../modules/vpc_subnet"
   vpc_name = "onozawa-terraform-prd"
   subnet_name = "DMZ-stg-1a"
 }
@@ -13,7 +13,7 @@ module "first_vpc_subnet" {
 # bastion EC2 IAM ROLE
 #---------------------------------------
 module "bastion_role" {
-  source = "./modules/iam"
+  source = "../../modules/iam"
   role_name = "RL-bastion-prd"
 }
 
@@ -21,7 +21,7 @@ module "bastion_role" {
 # bastion SG
 #---------------------------------------
 module "bastion_sg" {
-  source = "./modules/sg"
+  source = "../../modules/sg"
   vpc_id  = module.first_vpc_subnet.vpc_id
   sg_name = "bastion-prd"
 }
@@ -30,7 +30,7 @@ module "bastion_sg" {
 # bastion EC2
 #---------------------------------------
 # module "bastion_ec2" {
-#     source = "./modules/ec2"
+#     source = "../../modules/ec2"
 #     ec2_name = "bastion-stg"
 #     profile = module.bastion_role.profile
 #     sg_id = module.bastion_sg.bastion_id
