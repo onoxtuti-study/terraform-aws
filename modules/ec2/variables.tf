@@ -14,9 +14,13 @@ variable "profile" {
 }
 
 variable "sg_id" {
-    type = string
+    type = list(string)
 }
 
 variable "subnet_id" {
+    type = string
+}
+
+variable "key_name" {
     type = string
 }
