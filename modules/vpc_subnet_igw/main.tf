@@ -13,3 +13,11 @@ resource "aws_subnet" "study_dmz_1a" {
     Name = var.subnet_name
   }
 }
+
+resource "aws_internet_gateway" "study_igw" {
+  vpc_id = aws_vpc.study.id
+
+  tags = {
+    Name = var.igw_name
+  }
+}
