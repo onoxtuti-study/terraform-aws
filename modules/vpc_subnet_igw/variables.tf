@@ -22,3 +22,7 @@ variable "dmz_1a_subnet_cidr_block_map" {
 variable "subnet_name" {
     type = string
 }
+
+variable "igw_name" {
+    type = string
+}
