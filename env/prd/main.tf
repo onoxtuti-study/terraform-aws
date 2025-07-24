@@ -7,7 +7,7 @@ module "first_vpc_subnet" {
   source = "../../modules/vpc_subnet"
   vpc_name = "onozawa-terraform-prd"
   env = "prd"
-  subnet_name = "DMZ-stg-1a"
+  subnet_name = "DMZ-prd-1a"
 }
 
 #---------------------------------------
