@@ -4,10 +4,11 @@
 # VPC/DMZ Subnet
 #---------------------------------------
 module "first_vpc_subnet" {
-  source = "../../modules/vpc_subnet"
+  source = "../../modules/vpc_subnet_igw"
   vpc_name = "onozawa-terraform-prd"
   env = "prd"
   subnet_name = "DMZ-prd-1a"
+  igw_name = "igw-onozawa-terraform-prd"
 }
 
 #---------------------------------------

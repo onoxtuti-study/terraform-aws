@@ -1,13 +1,14 @@
 #STG環境
 
 #---------------------------------------
-# VPC/DMZ Subnet
+# VPC/DMZ Subnet/IGW
 #---------------------------------------
 module "first_vpc_subnet" {
-  source = "../../modules/vpc_subnet"
+  source = "../../modules/vpc_subnet_igw"
   vpc_name = "onozawa-terraform-stg"
   env = "stg"
   subnet_name = "DMZ-stg-1a"
+  igw_name = "igw-onozawa-terraform-stg"
 }
 
 #---------------------------------------
