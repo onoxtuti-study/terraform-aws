@@ -4,7 +4,7 @@ resource "aws_instance" "bastion" {
     iam_instance_profile = var.profile
     subnet_id = var.subnet_id
     key_name = var.key_name
-    security_groups = var.sg_id
+    vpc_security_group_ids = var.sg_id
     tags = {
         Name: var.ec2_name
     }
