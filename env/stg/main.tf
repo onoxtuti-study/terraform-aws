@@ -19,6 +19,7 @@ module "public_route" {
   vpc_id = module.first_vpc_subnet.vpc_id
   cidr_block = module.first_vpc_subnet.vpc_cidr
   igw_id = module.first_vpc_subnet.igw_id
+  subnet_id = module.first_vpc_subnet.subnet_id
   rt_name = "rt-dmz-stg"
 }
 
