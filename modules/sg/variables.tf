@@ -7,6 +7,5 @@ variable "vpc_id" {
 }
 
 variable "open_ip" {
-    type = list(string)
-    default = [ "59.166.119.170/32"]
+  type = list(string)
 }
