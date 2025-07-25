@@ -26,6 +26,7 @@ module "bastion_role" {
 module "bastion_sg" {
   source = "../../modules/sg"
   vpc_id  = module.first_vpc_subnet.vpc_id
+  open_ip = var.bastion_open_ip
   sg_name = "bastion-stg"
 }
 
