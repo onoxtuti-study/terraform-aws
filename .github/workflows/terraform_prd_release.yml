@@ -32,6 +32,9 @@ jobs:
         with:
           terraform_version: "1.12.2"
 
+      - name: ファイルダウンロード
+        run: aws s3 cp s3://onozawa-secret/secrets.auto.tfvars ./secrets.auto.tfvars
+
       - name: Terraform初期化
         run: terraform init
 
