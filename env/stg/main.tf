@@ -12,6 +12,17 @@ module "first_vpc_subnet" {
 }
 
 #---------------------------------------
+# bastion route table
+#---------------------------------------
+module "public_route" {
+  source = "../../modules/routetable"
+  vpc_id = module.first_vpc_subnet.vpc_id
+  cidr_block = module.first_vpc_subnet.vpc_cidr
+  igw_id = module.first_vpc_subnet.igw_id
+  rt_name = "rt-dmz-stg"
+}
+
+#---------------------------------------
 # bastion EC2 IAM ROLE
 #---------------------------------------
 module "bastion_role" {
