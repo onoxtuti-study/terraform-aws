@@ -36,7 +36,7 @@ jobs:
         run: terraform init
 
       - name: terraform plan
-        run: terraform plan
+        run: terraform plan -input=false
 
       - name: prd環境の構築
         run: terraform apply -auto-approve
