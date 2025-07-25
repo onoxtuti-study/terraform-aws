@@ -14,5 +14,11 @@ variable "igw_id" {
 }
 
 variable "rt_name" {
+  description = "route table name"
+  type = string
+}
+
+variable "subnet_id" {
+  description = "subnet id"
   type = string
 }
