@@ -39,5 +39,6 @@ module "bastion_ec2" {
     profile = module.bastion_role.profile_name
     sg_id = [module.bastion_sg.bastion_id]
     subnet_id = module.first_vpc_subnet.subnet_id
+    associate_public_ip_address = true
     key_name = "onozawa-bastion"
 }
