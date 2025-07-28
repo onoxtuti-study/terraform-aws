@@ -3,7 +3,6 @@ name: Terraform Validate
 on:
   pull_request:
     branches:
-      - develop
       - main
 
 jobs:
@@ -13,7 +12,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: env/stg
+        working-directory: env/prd
 
     steps:
       - name: リポジトリをチェックアウト
