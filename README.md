@@ -37,8 +37,6 @@ Terraformを使用してAWS上にリソースの構築。なお、構築する�
 ## 今後の拡張予定
 - GitHubActionsを使用しランナーにAnsibleを導入
   (AnsibleでMWの管理予定)
-- このアクションを手動実行できる様にする
-  (もっとスマートな運用方法を検討中...)
 
 ## 備考
 - EC2で使用するKeyPairについては、変更回数およびセキュリティの観点からTerraformの管理外
@@ -49,3 +47,6 @@ Terraformを使用してAWS上にリソースの構築。なお、構築する�
 - 【入門】Terraformの基礎を90分で解説するチュートリアル (https://www.youtube.com/watch?v=h1MDCp7blmg)
 - GitHub Actionsを使ってCI/CDを実装！ジョブを自動化して開発効率UP！ (https://www.youtube.com/watch?v=RxcUrg3OO3o&t=29s)
 - ChatGpt (https://chatgpt.com/)
+- 【第1回】Ansibleを学ぼう。Ansibleとは？ (https://www.youtube.com/watch?v=NtNbMYkoG7w)
+- 【第2回】Ansibleを学ぼう。Ansibleとは②？ (https://www.youtube.com/watch?v=5greKorNULA)
+- 【第3回】Ansibleを学ぼう。Ansibleの概要 (https://www.youtube.com/watch?v=JCfJa_hwo2o)
