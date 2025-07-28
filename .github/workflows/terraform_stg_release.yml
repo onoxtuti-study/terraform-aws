@@ -32,6 +32,11 @@ jobs:
         with:
           terraform_version: "1.12.2"
       
+      - name: Pythonセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      
       - name: ファイルダウンロード
         run: aws s3 cp s3://onozawa-secret/secrets.auto.tfvars ./secrets.auto.tfvars
 
