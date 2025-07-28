@@ -5,7 +5,7 @@ locals {
 }
 
 #---------------------------------------
-# VPC/DMZ Subnet/IGW
+# VPC/IGW
 #---------------------------------------
 module "first_vpc" {
   source = "../../modules/vpc_igw"

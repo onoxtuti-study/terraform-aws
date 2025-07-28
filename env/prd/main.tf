@@ -5,14 +5,35 @@ locals {
 }
 
 #---------------------------------------
-# VPC/DMZ Subnet
+# VPC/IGW
 #---------------------------------------
-module "first_vpc_subnet" {
-  source = "../../modules/vpc_subnet_igw"
+module "first_vpc" {
+  source = "../../modules/vpc_igw"
   vpc_name = "onozawa-terraform-${local.env}"
   env = "${local.env}"
-  subnet_name = "DMZ-${local.env}-1a"
   igw_name = "igw-onozawa-terraform-${local.env}"
+}
+
+#---------------------------------------
+# DMZ Subnet
+#---------------------------------------
+module "sb_dmz" {
+  vpc_id = module.first_vpc.vpc_id
+  source = "../../modules/subnet"
+  env = "${local.env}"
+  area = "DMZ"
+  subnet_name = "DMZ-${local.env}-1a"
+}
+
+#---------------------------------------
+# FRONT Subnet
+#---------------------------------------
+module "sb_front" {
+  vpc_id = module.first_vpc.vpc_id
+  source = "../../modules/subnet"
+  env = "${local.env}"
+  area = "FRONT"
+  subnet_name = "FRONT-${local.env}-1a"
 }
 
 #---------------------------------------
@@ -20,10 +41,10 @@ module "first_vpc_subnet" {
 #---------------------------------------
 module "public_route" {
   source = "../../modules/routetable"
-  vpc_id = module.first_vpc_subnet.vpc_id
-  cidr_block = module.first_vpc_subnet.vpc_cidr
-  igw_id = module.first_vpc_subnet.igw_id
-  subnet_id = module.first_vpc_subnet.subnet_id
+  vpc_id = module.first_vpc.vpc_id
+  cidr_block = module.first_vpc.vpc_cidr
+  igw_id = module.first_vpc.igw_id
+  subnet_id = module.sb_dmz.subnet_id
   rt_name = "rt-dmz-${local.env}"
 }
 
@@ -41,7 +62,7 @@ module "bastion_role" {
 #---------------------------------------
 module "bastion_sg" {
   source = "../../modules/sg"
-  vpc_id  = module.first_vpc_subnet.vpc_id
+  vpc_id  = module.first_vpc.vpc_id
   open_ip = var.bastion_open_ip
   sg_name = "bastion-${local.env}"
 }
@@ -54,7 +75,7 @@ module "bastion_ec2" {
     ec2_name = "bastion-${local.env}"
     profile = module.bastion_role.profile_name
     sg_id = [module.bastion_sg.bastion_id]
-    subnet_id = module.first_vpc_subnet.subnet_id
+    subnet_id = module.sb_dmz.subnet_id
     associate_public_ip_address = true
     key_name = "onozawa-bastion"
 }
