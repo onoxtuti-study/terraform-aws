@@ -1,4 +1,4 @@
-resource "aws_instance" "bastion" {
+resource "aws_instance" "instance" {
     ami = var.ami_id["al2023"]
     instance_type = "t2.micro"
     iam_instance_profile = var.profile
