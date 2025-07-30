@@ -1,4 +1,4 @@
-name: Terraform Validate
+name: Terraform Validate prd
 
 on:
   pull_request:
