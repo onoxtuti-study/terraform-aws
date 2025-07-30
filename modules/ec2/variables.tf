@@ -36,3 +36,8 @@ variable "associate_public_ip_address" {
   type = bool
   default = false
 }
+
+variable "user_data" {
+  type = string
+  default = null
+}

@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+# パッケージを最新化
+dnf update -y
+# Python3 + pip インストール
+dnf install -y python3 python3-pip
+# pip を最新版にしてから Ansible をインストール
+pip3 install --upgrade pip
+pip3 install ansible
+# インストール確認ログを出力
+ansible --version > /var/log/ansible-install.log 2>&1
