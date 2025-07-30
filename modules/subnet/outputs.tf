@@ -1,4 +1,4 @@
-output "subnet_id" {
+output "id" {
   description = "Output each subnet ID"
-  value = aws_subnet.study_subnet.id
+  value = aws_subnet.subnet.id
 }

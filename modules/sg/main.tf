@@ -7,7 +7,7 @@ resource "aws_security_group" "sg" {
   }
 }
 
-resource "aws_security_group_rule" "bastion_ingress" {
+resource "aws_security_group_rule" "ingress" {
   for_each = { for index, value in var.open_ip : index => value }
 
   type              = "ingress"
