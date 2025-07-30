@@ -74,7 +74,7 @@ module "bastion_sg" {
 module "bat_sg" {
   source = "../../modules/sg"
   vpc_id  = module.first_vpc.vpc_id
-  open_ip = module.bastion_ec2.private_ip
+  open_ip = [module.bastion_ec2.private_ip]
   sg_name = "bat-${local.env}"
   description = "bat ec2"
 }
