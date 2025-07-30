@@ -37,15 +37,27 @@ module "sb_front" {
 }
 
 #---------------------------------------
-# bastion route table
+# DMZ RT
 #---------------------------------------
 module "public_route" {
   source = "../../modules/routetable"
   vpc_id = module.first_vpc.vpc_id
   cidr_block = module.first_vpc.vpc_cidr
-  igw_id = module.first_vpc.igw_id
+  gw_id = module.first_vpc.igw_id
   subnet_id = module.sb_dmz.id
   rt_name = "rt-dmz-${local.env}"
+}
+
+#---------------------------------------
+# FRONT RT
+#---------------------------------------
+module "front_route" {
+  source = "../../modules/routetable"
+  vpc_id = module.first_vpc.vpc_id
+  cidr_block = module.first_vpc.vpc_cidr
+  gw_id = module.natg.id
+  subnet_id = module.sb_front.id
+  rt_name = "rt-front-${local.env}"
 }
 
 #---------------------------------------
@@ -103,5 +115,24 @@ module "bat_ec2" {
     subnet_id = module.sb_front.id
     associate_public_ip_address = true
     key_name = "onozawa-front"
-    user_data = templatefile("add_ansible.txt", {})
+    user_data = templatefile("add_ansible.txt",{})
+}
+
+#---------------------------------------
+# NATG EIP
+#---------------------------------------
+module "natg_eip" {
+  source = "../../modules/eip"
+  name = "eip-natg-${local.env}"
+}
+
+#---------------------------------------
+# NATG
+#---------------------------------------
+module "natg" {
+  source = "../../modules/natg"
+  eip_id = module.natg_eip.id
+  subnet_id = module.sb_dmz.id
+  name = "natg-terraform-${local.env}"
+  depends_on = [module.natg_eip]
 }
