@@ -8,8 +8,8 @@ variable "cidr_block" {
   type = string
 }
 
-variable "igw_id" {
-  description = "internet gateway id"  
+variable "gw_id" {
+  description = "gateway id"  
   type = string
 }
 

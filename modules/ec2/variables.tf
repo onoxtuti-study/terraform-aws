@@ -36,3 +36,9 @@ variable "associate_public_ip_address" {
   type = bool
   default = false
 }
+
+variable "user_data" {
+  description = "Used to install ansible"
+  type = string
+  default = null
+}
