@@ -9,3 +9,7 @@ variable "vpc_id" {
 variable "open_ip" {
   type = list(string)
 }
+
+variable "description" {
+  type = string
+}

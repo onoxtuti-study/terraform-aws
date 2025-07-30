@@ -1,20 +1,20 @@
-resource "aws_security_group" "bastion" {
+resource "aws_security_group" "sg" {
   name        = var.sg_name
-  description = "bastion ec2"
+  description = var.description
   vpc_id      = var.vpc_id
   tags = {
     Name = var.sg_name
   }
 }
 
-resource "aws_security_group_rule" "bastion_ingress" {
-  for_each = toset(var.open_ip)
+resource "aws_security_group_rule" "ingress" {
+  for_each = { for index, value in var.open_ip : index => value }
 
   type              = "ingress"
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
   cidr_blocks       = [each.value]
-  security_group_id = aws_security_group.bastion.id
+  security_group_id = aws_security_group.sg.id
   description       = "SSH from ${each.value}"
 }
