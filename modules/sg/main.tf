@@ -17,4 +17,5 @@ resource "aws_security_group_rule" "ingress" {
   cidr_blocks       = [each.value]
   security_group_id = aws_security_group.sg.id
   description       = "SSH from ${each.value}"
+  depends_on = [aws_security_group.sg]
 }

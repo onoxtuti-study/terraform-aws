@@ -37,15 +37,27 @@ module "sb_front" {
 }
 
 #---------------------------------------
-# bastion route table
+# DMZ RT
 #---------------------------------------
 module "public_route" {
   source = "../../modules/routetable"
   vpc_id = module.first_vpc.vpc_id
   cidr_block = module.first_vpc.vpc_cidr
-  igw_id = module.first_vpc.igw_id
+  gw_id = module.first_vpc.igw_id
   subnet_id = module.sb_dmz.id
   rt_name = "rt-dmz-${local.env}"
+}
+
+#---------------------------------------
+# FRONT RT
+#---------------------------------------
+module "front_route" {
+  source = "../../modules/routetable"
+  vpc_id = module.first_vpc.vpc_id
+  cidr_block = module.first_vpc.vpc_cidr
+  gw_id = module.natg.id
+  subnet_id = module.sb_front.id
+  rt_name = "rt-front-${local.env}"
 }
 
 #---------------------------------------
@@ -74,7 +86,7 @@ module "bastion_sg" {
 module "bat_sg" {
   source = "../../modules/sg"
   vpc_id  = module.first_vpc.vpc_id
-  open_ip = ["${module.bastion_ec2.private_ip}/32"]
+  open_ip = [module.sb_dmz.ip]
   sg_name = "bat-${local.env}"
   description = "bat ec2"
 }
@@ -86,7 +98,7 @@ module "bastion_ec2" {
     source = "../../modules/ec2"
     ec2_name = "bastion-${local.env}"
     profile = module.bastion_role.profile_name
-    sg_id = [module.bastion_sg.bastion_id]
+    sg_id = [module.bastion_sg.id]
     subnet_id = module.sb_dmz.id
     associate_public_ip_address = true
     key_name = "onozawa-bastion"
@@ -103,18 +115,24 @@ module "bat_ec2" {
     subnet_id = module.sb_front.id
     associate_public_ip_address = true
     key_name = "onozawa-front"
+    user_data = templatefile("add_ansible.txt",{})
 }
 
 #---------------------------------------
-# bat EC2
+# NATG EIP
 #---------------------------------------
-module "bat_ec2" {
-    source = "../../modules/ec2"
-    ec2_name = "bat-${local.env}"
-    profile = module.bastion_role.profile_name
-    sg_id = [module.bat_sg.id]
-    subnet_id = module.sb_front.id
-    associate_public_ip_address = true
-    key_name = "onozawa-front"
-    user_data = templatefile("add_ansible.txt", {})
+module "natg_eip" {
+  source = "../../modules/eip"
+  name = "eip-natg-${local.env}"
+}
+
+#---------------------------------------
+# NATG
+#---------------------------------------
+module "natg" {
+  source = "../../modules/natg"
+  eip_id = module.natg_eip.id
+  subnet_id = module.sb_dmz.id
+  name = "natg-terraform-${local.env}"
+  depends_on = [module.natg_eip]
 }
