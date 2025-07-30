@@ -1,4 +1,4 @@
-name: Terraform Validate
+name: Terraform Validate stg
 
 on:
   pull_request:
