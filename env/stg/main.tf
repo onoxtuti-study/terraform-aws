@@ -74,7 +74,7 @@ module "bastion_sg" {
 module "bat_sg" {
   source = "../../modules/sg"
   vpc_id  = module.first_vpc.vpc_id
-  open_ip = ["${module.bastion_ec2.private_ip}/32"]
+  open_ip = [module.sb_dmz.ip]
   sg_name = "bat-${local.env}"
   description = "bat ec2"
 }
@@ -86,8 +86,22 @@ module "bastion_ec2" {
     source = "../../modules/ec2"
     ec2_name = "bastion-${local.env}"
     profile = module.bastion_role.profile_name
-    sg_id = [module.bastion_sg.bastion_id]
+    sg_id = [module.bastion_sg.id]
     subnet_id = module.sb_dmz.id
     associate_public_ip_address = true
     key_name = "onozawa-bastion"
+}
+
+#---------------------------------------
+# bat EC2
+#---------------------------------------
+module "bat_ec2" {
+    source = "../../modules/ec2"
+    ec2_name = "bat-${local.env}"
+    profile = module.bastion_role.profile_name
+    sg_id = [module.bat_sg.id]
+    subnet_id = module.sb_front.id
+    associate_public_ip_address = true
+    key_name = "onozawa-front"
+    user_data = templatefile("add_ansible.txt", {})
 }
