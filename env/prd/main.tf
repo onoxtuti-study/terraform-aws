@@ -66,7 +66,7 @@ module "front_route" {
 module "bastion_role" {
   source = "../../modules/iam"
   role_name = "RL-bastion-${local.env}"
-  customer_role_name = ["AmazonEC2FullAccess", "AmazonSSMFullAccess"]
+  customer_role_name = ["AmazonEC2FullAccess", "AmazonSSMManagedInstanceCore"]
 }
 
 #---------------------------------------
