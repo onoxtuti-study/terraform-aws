@@ -108,6 +108,19 @@ module "bastion_ec2" {
 }
 
 #---------------------------------------
+# db-client EC2
+#---------------------------------------
+module "db-client_ec2" {
+    source = "../../modules/ec2"
+    ec2_name = "db-client-${local.env}"
+    profile = module.bastion_role.profile_name
+    sg_id = [module.bat_sg.id]
+    subnet_id = module.sb_front.id
+    associate_public_ip_address = true
+    key_name = "onozawa-front"
+}
+
+#---------------------------------------
 # bat EC2
 #---------------------------------------
 module "bat_ec2" {
