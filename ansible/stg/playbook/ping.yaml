@@ -1,0 +1,4 @@
+- hosts: api
+  tasks:
+    - name: ping test
+      ping:
