@@ -22,3 +22,8 @@ variable "subnet_id" {
   description = "subnet id"
   type = string
 }
+
+variable "gw_type" {
+  description = "For identifying the type of gateway"
+  type = string
+}

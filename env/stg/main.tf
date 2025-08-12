@@ -12,6 +12,7 @@ module "first_vpc" {
   vpc_name = "onozawa-terraform-${local.env}"
   env = "${local.env}"
   igw_name = "igw-onozawa-terraform-${local.env}"
+  gw_type = "igw"
 }
 
 #---------------------------------------
@@ -46,6 +47,7 @@ module "public_route" {
   gw_id = module.first_vpc.igw_id
   subnet_id = module.sb_dmz.id
   rt_name = "rt-dmz-${local.env}"
+  gw_type = module.first_vpc.gw_type
 }
 
 #---------------------------------------
@@ -58,6 +60,7 @@ module "front_route" {
   gw_id = module.natg.id
   subnet_id = module.sb_front.id
   rt_name = "rt-front-${local.env}"
+  gw_type = module.natg.gw_type
 }
 
 #---------------------------------------
@@ -135,4 +138,5 @@ module "natg" {
   subnet_id = module.sb_dmz.id
   name = "natg-terraform-${local.env}"
   depends_on = [module.natg_eip]
+  gw_type = "natgw"
 }

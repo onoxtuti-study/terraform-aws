@@ -12,3 +12,8 @@ output "vpc_cidr" {
   description = "export vpc cidr"
   value = aws_vpc.vpc.cidr_block
 }
+
+output "gw_type" {
+  description = "export gw type"
+  value = var.gw_type
+}
