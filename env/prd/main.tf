@@ -49,14 +49,14 @@ module "sb_back_1a" {
 }
 
 #---------------------------------------
-# BACK-1b Subnet
+# BACK-1c Subnet
 #---------------------------------------
 module "sb_back_1b" {
   vpc_id = module.first_vpc.vpc_id
   source = "../../modules/subnet"
   env = "${local.env}"
   area = "BACK-1b"
-  subnet_name = "BACK-${local.env}-1b"
+  subnet_name = "BACK-${local.env}-1c"
 }
 
 #---------------------------------------
