@@ -38,6 +38,28 @@ module "sb_front" {
 }
 
 #---------------------------------------
+# BACK-1a Subnet
+#---------------------------------------
+module "sb_back_1a" {
+  vpc_id = module.first_vpc.vpc_id
+  source = "../../modules/subnet"
+  env = "${local.env}"
+  area = "BACK-1a"
+  subnet_name = "BACK-${local.env}-1a"
+}
+
+#---------------------------------------
+# BACK-1c Subnet
+#---------------------------------------
+module "sb_back_1b" {
+  vpc_id = module.first_vpc.vpc_id
+  source = "../../modules/subnet"
+  env = "${local.env}"
+  area = "BACK-1b"
+  subnet_name = "BACK-${local.env}-1c"
+}
+
+#---------------------------------------
 # DMZ RT
 #---------------------------------------
 module "public_route" {
