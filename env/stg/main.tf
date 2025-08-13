@@ -60,6 +60,15 @@ module "sb_back_1b" {
 }
 
 #---------------------------------------
+# DB Subnet
+#---------------------------------------
+module "db_subnet_group" {
+  source = "../../modules/dbsubnetgroup"
+  name = "terraform-db-subnet-${local.env}"
+  subnet = [module.sb_back_1a.id, module.sb_back_1b.id]
+}
+
+#---------------------------------------
 # DMZ RT
 #---------------------------------------
 module "public_route" {
