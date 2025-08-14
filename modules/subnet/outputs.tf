@@ -7,3 +7,7 @@ output "ip" {
   description = "subnet ip"
   value = aws_subnet.subnet.cidr_block
 }
+
+output "cidr_block" {
+  value = aws_subnet.subnet.cidr_block
+}
