@@ -3,18 +3,10 @@
   become: true
 
   tasks:
-    - name: Add PostgreSQL 17 repository
-      dnf:
-        name: "https://download.postgresql.org/pub/repos/yum/17/redhat/rhel-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
-        state: present
-
-    - name: Disable default PostgreSQL module
-      dnf:
-        name: postgresql
-        state: absent
-        module: postgresql
-
     - name: Install PostgreSQL 17 client
       dnf:
         name: postgresql17
         state: present
+    
+    - name: Check postgresql 17 client version
+      command: psql -V
