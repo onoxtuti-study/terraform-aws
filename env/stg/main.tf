@@ -126,6 +126,17 @@ module "bat_sg" {
 }
 
 #---------------------------------------
+# RDS SG
+#---------------------------------------
+module "RDS_sg" {
+  source = "../../modules/sg"
+  vpc_id  = module.first_vpc.vpc_id
+  open_ip = [module.sb_front.cidr_block]
+  sg_name = "rds-${local.env}"
+  description = "rds"
+}
+
+#---------------------------------------
 # bastion EC2
 #---------------------------------------
 module "bastion_ec2" {
