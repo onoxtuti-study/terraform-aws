@@ -1,4 +1,4 @@
-- name: Install PostgreSQL 17 client on Amazon Linux 2023
+- name: Install PostgreSQL 17 client on AL2023
   hosts: api
   become: true
 
@@ -18,11 +18,3 @@
       dnf:
         name: postgresql17
         state: present
-
-    - name: Verify installation
-      command: psql --version
-      register: psql_version
-      changed_when: false
-
-    - debug:
-        msg: "{{ psql_version.stdout }}"
