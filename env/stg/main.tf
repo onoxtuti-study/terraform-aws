@@ -184,3 +184,14 @@ module "natg" {
   depends_on = [module.natg_eip]
   gw_type = "natgw"
 }
+
+#---------------------------------------
+# RDS PostgreSQL
+#---------------------------------------
+module "app_info" {
+  source = "../../modules/rds"
+  name = "eweb-${local.env}"
+  subnet = module.db_subnet_group.id
+  db_name = var.db_config[local.env].name
+  db_pass = var.db_config[local.env].pass
+}

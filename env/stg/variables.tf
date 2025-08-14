@@ -9,3 +9,10 @@ variable "bastion_open_ip" {
 variable "bat_open_ip_map" {
   type = map(list(string))
 }
+
+variable "db_config" {
+  type = map(object({
+    name = string
+    pass = string
+  }))
+}
