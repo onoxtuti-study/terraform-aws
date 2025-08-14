@@ -7,6 +7,3 @@
       dnf:
         name: postgresql17
         state: present
-    
-    - name: Check postgresql 17 client version
-      command: psql -V
