@@ -126,6 +126,17 @@ module "bat_sg" {
 }
 
 #---------------------------------------
+# RDS SG
+#---------------------------------------
+module "RDS_sg" {
+  source = "../../modules/sg"
+  vpc_id  = module.first_vpc.vpc_id
+  open_ip = [module.sb_front.cidr_block]
+  sg_name = "rds-${local.env}"
+  description = "rds"
+}
+
+#---------------------------------------
 # bastion EC2
 #---------------------------------------
 module "bastion_ec2" {
@@ -183,4 +194,16 @@ module "natg" {
   name = "natg-terraform-${local.env}"
   depends_on = [module.natg_eip]
   gw_type = "natgw"
+}
+
+#---------------------------------------
+# RDS PostgreSQL
+#---------------------------------------
+module "app_info" {
+  source = "../../modules/rds"
+  name = "eweb-${local.env}"
+  subnet = module.db_subnet_group.id
+  db_name = var.db_config[local.env].name
+  db_pass = var.db_config[local.env].pass
+  sg = module.RDS_sg.id
 }

@@ -5,6 +5,9 @@ on:
     branches:
       - develop
     types: [closed]
+    paths:
+      - "env/stg/**"
+      - "modules/**"
 
 jobs:
   validate:

@@ -1,0 +1,9 @@
+- name: Install PostgreSQL 17 client on AL2023
+  hosts: api
+  become: true
+
+  tasks:
+    - name: Install PostgreSQL 17 client
+      dnf:
+        name: postgresql17
+        state: present
