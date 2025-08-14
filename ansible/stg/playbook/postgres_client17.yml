@@ -1,28 +1,12 @@
-- name: Install PostgreSQL 17 client on Amazon Linux 2023
+- name: Install PostgreSQL 17 client on AL2023
   hosts: api
   become: true
 
   tasks:
-    - name: Add PostgreSQL 17 repository
-      dnf:
-        name: "https://download.postgresql.org/pub/repos/yum/17/redhat/rhel-9-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
-        state: present
-
-    - name: Disable default PostgreSQL module
-      dnf:
-        name: postgresql
-        state: absent
-        module: postgresql
-
     - name: Install PostgreSQL 17 client
       dnf:
         name: postgresql17
         state: present
-
-    - name: Verify installation
-      command: psql --version
-      register: psql_version
-      changed_when: false
-
-    - debug:
-        msg: "{{ psql_version.stdout }}"
+    
+    - name: Check postgresql 17 client version
+      command: psql -V
