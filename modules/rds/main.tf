@@ -11,6 +11,7 @@ resource "aws_db_instance" "rds_postgres" {
     password                = var.db_pass
     backup_retention_period = 0
     skip_final_snapshot     = true
+    vpc_security_group_ids = [var.sg]
 
     tags = {
         Name = var.name
