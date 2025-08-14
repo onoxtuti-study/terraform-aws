@@ -1,7 +1,7 @@
 resource "aws_db_instance" "rds_postgres" {
     identifier              = var.name
     db_name                 = "postgres"
-    allocated_storage       = 10
+    allocated_storage       = 20
     storage_type            = "gp3"
     engine                  = "postgres"
     engine_version          = "17.4"
