@@ -205,4 +205,5 @@ module "app_info" {
   subnet = module.db_subnet_group.id
   db_name = var.db_config[local.env].name
   db_pass = var.db_config[local.env].pass
+  sg = module.RDS_sg.id
 }

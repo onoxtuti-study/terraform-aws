@@ -13,3 +13,7 @@ variable "db_name" {
 variable "db_pass" {
   type = string
 }
+
+variable "sg" {
+  type = string
+}
