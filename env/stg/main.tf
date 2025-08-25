@@ -137,6 +137,17 @@ module "RDS_sg" {
 }
 
 #---------------------------------------
+# ALB SG
+#---------------------------------------
+module "alb_sg" {
+  source = "../../modules/sg"
+  vpc_id  = module.first_vpc.vpc_id
+  open_ip = var.bastion_open_ip
+  sg_name = "alb-${local.env}"
+  description = "alb"
+}
+
+#---------------------------------------
 # bastion EC2
 #---------------------------------------
 module "bastion_ec2" {

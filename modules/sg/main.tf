@@ -11,12 +11,12 @@ resource "aws_security_group_rule" "ingress" {
   for_each = { for index, value in var.open_ip : index => value }
 
   type              = "ingress"
-  from_port         = can(regex("rds", var.sg_name)) ? 5432 : 22
-  to_port           = can(regex("rds", var.sg_name)) ? 5432 : 22
+  from_port         = can(regex("rds", var.sg_name)) ? 5432 : (can(regex("alb", var.sg_name)) ? 80 : 22)
+  to_port           = can(regex("rds", var.sg_name)) ? 5432 : (can(regex("alb", var.sg_name)) ? 80 : 22)
   protocol          = "tcp"
   cidr_blocks       = [each.value]
   security_group_id = aws_security_group.sg.id
-  description       = "SSH from ${each.value}"
+  description       = can(regex("rds", var.sg_name)) ? "Postgres from ${each.value}" : (can(regex("alb", var.sg_name)) ? "HTTP from ${each.value}" : "SSH from ${each.value}")
   depends_on = [aws_security_group.sg]
 }
 
