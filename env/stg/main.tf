@@ -22,7 +22,7 @@ module "sb_dmz-1a" {
   vpc_id = module.first_vpc.vpc_id
   source = "../../modules/subnet"
   env = "${local.env}"
-  area = "DMZ"
+  area = "DMZ-1a"
   subnet_name = "DMZ-${local.env}-1a"
 }
 #---------------------------------------
@@ -32,7 +32,7 @@ module "sb_dmz-1c" {
   vpc_id = module.first_vpc.vpc_id
   source = "../../modules/subnet"
   env = "${local.env}"
-  area = "DMZ"
+  area = "DMZ-1c"
   subnet_name = "DMZ-${local.env}-1c"
 }
 
