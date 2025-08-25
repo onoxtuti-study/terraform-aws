@@ -174,6 +174,15 @@ module "db-client_ec2" {
 }
 
 #---------------------------------------
+# ALB
+#---------------------------------------
+module "alb" {
+  source = "../../modules/alb"
+  name = "terraform-alb-${local.env}"
+  sg_id = module.alb_sg.id
+  subnet_id = module.sb_dmz.id
+}
+#---------------------------------------
 # bat EC2
 #---------------------------------------
 module "bat_ec2" {
