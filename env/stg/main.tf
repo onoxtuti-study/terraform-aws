@@ -255,9 +255,9 @@ module "app_info" {
 }
 
 #---------------------------------------
-# ECR
+# ECR Django
 #---------------------------------------
-module "ecr" {
+module "django_repo" {
   source = "../../modules/ecr"
-  name = "spring"
+  name = "Django"
 }
