@@ -16,14 +16,24 @@ module "first_vpc" {
 }
 
 #---------------------------------------
-# DMZ Subnet
+# DMZ-1a Subnet
 #---------------------------------------
-module "sb_dmz" {
+module "sb_dmz-1a" {
   vpc_id = module.first_vpc.vpc_id
   source = "../../modules/subnet"
   env = "${local.env}"
   area = "DMZ"
   subnet_name = "DMZ-${local.env}-1a"
+}
+#---------------------------------------
+# DMZ-1c Subnet
+#---------------------------------------
+module "sb_dmz-1c" {
+  vpc_id = module.first_vpc.vpc_id
+  source = "../../modules/subnet"
+  env = "${local.env}"
+  area = "DMZ"
+  subnet_name = "DMZ-${local.env}-1c"
 }
 
 #---------------------------------------
@@ -69,14 +79,27 @@ module "db_subnet_group" {
 }
 
 #---------------------------------------
-# DMZ RT
+# DMZ-1a RT
 #---------------------------------------
-module "public_route" {
+module "public_route_1a" {
   source = "../../modules/routetable"
   vpc_id = module.first_vpc.vpc_id
   cidr_block = module.first_vpc.vpc_cidr
   gw_id = module.first_vpc.igw_id
-  subnet_id = module.sb_dmz.id
+  subnet_id = module.sb_dmz-1a.id
+  rt_name = "rt-dmz-${local.env}"
+  gw_type = module.first_vpc.gw_type
+}
+
+#---------------------------------------
+# DMZ-1c RT
+#---------------------------------------
+module "public_route_1c" {
+  source = "../../modules/routetable"
+  vpc_id = module.first_vpc.vpc_id
+  cidr_block = module.first_vpc.vpc_cidr
+  gw_id = module.first_vpc.igw_id
+  subnet_id = module.sb_dmz-1c.id
   rt_name = "rt-dmz-${local.env}"
   gw_type = module.first_vpc.gw_type
 }
@@ -120,7 +143,7 @@ module "bastion_sg" {
 module "bat_sg" {
   source = "../../modules/sg"
   vpc_id  = module.first_vpc.vpc_id
-  open_ip = concat([module.sb_dmz.ip], lookup(var.bat_open_ip_map, local.env, []))
+  open_ip = concat([module.sb_dmz-1a.ip], lookup(var.bat_open_ip_map, local.env, []))
   sg_name = "bat-${local.env}"
   description = "bat ec2"
 }
@@ -155,7 +178,7 @@ module "bastion_ec2" {
     ec2_name = "bastion-${local.env}"
     profile = module.bastion_role.profile_name
     sg_id = [module.bastion_sg.id]
-    subnet_id = module.sb_dmz.id
+    subnet_id = module.sb_dmz-1a.id
     associate_public_ip_address = true
     key_name = "onozawa-bastion"
 }
@@ -180,7 +203,10 @@ module "alb" {
   source = "../../modules/alb"
   name = "terraform-alb-${local.env}"
   sg_id = module.alb_sg.id
-  subnet_id = module.sb_dmz.id
+  subnet_id = [
+    module.sb_dmz-1a.id,
+    module.sb_dmz-1c.id
+  ]
 }
 #---------------------------------------
 # bat EC2
@@ -210,7 +236,7 @@ module "natg_eip" {
 module "natg" {
   source = "../../modules/natg"
   eip_id = module.natg_eip.id
-  subnet_id = module.sb_dmz.id
+  subnet_id = module.sb_dmz-1a.id
   name = "natg-terraform-${local.env}"
   depends_on = [module.natg_eip]
   gw_type = "natgw"

@@ -7,5 +7,5 @@ variable "sg_id" {
 }
 
 variable "subnet_id" {
-  type = string
+  type = list(string)
 }
