@@ -259,5 +259,5 @@ module "app_info" {
 #---------------------------------------
 module "django_repo" {
   source = "../../modules/ecr"
-  name = "Django"
+  name = "django"
 }
