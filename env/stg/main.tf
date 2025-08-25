@@ -207,3 +207,11 @@ module "app_info" {
   db_pass = var.db_config[local.env].pass
   sg = module.RDS_sg.id
 }
+
+#---------------------------------------
+# ECR Django
+#---------------------------------------
+module "django_repo" {
+  source = "../../modules/ecr"
+  name = "Django"
+}
