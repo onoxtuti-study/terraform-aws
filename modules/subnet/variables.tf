@@ -4,7 +4,8 @@ variable "dmz_1a_subnet_cidr_block_map" {
         stg = {
             DMZ-1a = "10.0.1.0/24"
             DMZ-1c = "10.0.5.0/24"
-            FRONT = "10.0.2.0/24"
+            FRONT-1a = "10.0.2.0/24"
+            FRONT-1c = "10.0.6.0/24"
             BACK-1a = "10.0.3.0/24"
             BACK-1b = "10.0.4.0/24"
         }

@@ -37,14 +37,25 @@ module "sb_dmz-1c" {
 }
 
 #---------------------------------------
-# FRONT Subnet
+# FRONT-1a Subnet
 #---------------------------------------
-module "sb_front" {
+module "sb_front-1a" {
   vpc_id = module.first_vpc.vpc_id
   source = "../../modules/subnet"
   env = "${local.env}"
-  area = "FRONT"
+  area = "FRONT-1a"
   subnet_name = "FRONT-${local.env}-1a"
+}
+
+#---------------------------------------
+# FRONT-1c Subnet
+#---------------------------------------
+module "sb_front-1c" {
+  vpc_id = module.first_vpc.vpc_id
+  source = "../../modules/subnet"
+  env = "${local.env}"
+  area = "FRONT-1c"
+  subnet_name = "FRONT-${local.env}-1c"
 }
 
 #---------------------------------------
@@ -105,14 +116,27 @@ module "public_route_1c" {
 }
 
 #---------------------------------------
-# FRONT RT
+# FRONT-1a RT
 #---------------------------------------
-module "front_route" {
+module "front_route_1a" {
   source = "../../modules/routetable"
   vpc_id = module.first_vpc.vpc_id
   cidr_block = module.first_vpc.vpc_cidr
   gw_id = module.natg.id
-  subnet_id = module.sb_front.id
+  subnet_id = module.sb_front-1a.id
+  rt_name = "rt-front-${local.env}"
+  gw_type = module.natg.gw_type
+}
+
+#---------------------------------------
+# FRONT-1c RT
+#---------------------------------------
+module "front_route_1c" {
+  source = "../../modules/routetable"
+  vpc_id = module.first_vpc.vpc_id
+  cidr_block = module.first_vpc.vpc_cidr
+  gw_id = module.natg.id
+  subnet_id = module.sb_front-1c.id
   rt_name = "rt-front-${local.env}"
   gw_type = module.natg.gw_type
 }
@@ -154,7 +178,7 @@ module "bat_sg" {
 module "RDS_sg" {
   source = "../../modules/sg"
   vpc_id  = module.first_vpc.vpc_id
-  open_ip = [module.sb_front.cidr_block]
+  open_ip = [module.sb_front-1a.cidr_block, module.sb_front-1c.cidr_block]
   sg_name = "rds-${local.env}"
   description = "rds"
 }
@@ -191,7 +215,7 @@ module "db-client_ec2" {
     ec2_name = "db-client-${local.env}"
     profile = module.bastion_role.profile_name
     sg_id = [module.bat_sg.id]
-    subnet_id = module.sb_front.id
+    subnet_id = module.sb_front-1a.id
     associate_public_ip_address = true
     key_name = "onozawa-front"
 }
@@ -216,7 +240,7 @@ module "bat_ec2" {
     ec2_name = "bat-${local.env}"
     profile = module.bastion_role.profile_name
     sg_id = [module.bat_sg.id]
-    subnet_id = module.sb_front.id
+    subnet_id = module.sb_front-1a.id
     associate_public_ip_address = true
     key_name = "onozawa-front"
     user_data = templatefile("add_ansible.txt",{})
