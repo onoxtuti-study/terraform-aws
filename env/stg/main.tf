@@ -231,6 +231,8 @@ module "alb" {
     module.sb_dmz-1a.id,
     module.sb_dmz-1c.id
   ]
+  listener_name = "django"
+  vpc_id = module.first_vpc.vpc_id
 }
 #---------------------------------------
 # bat EC2
