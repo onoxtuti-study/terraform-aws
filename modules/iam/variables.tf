@@ -11,5 +11,6 @@ variable "iam_role_policy_map" {
     default = {
       "AmazonEC2FullAccess" = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
       "AmazonSSMManagedInstanceCore" = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+      "AmazonECSTaskExecutionRolePolicy" = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
     }
 }
