@@ -151,6 +151,15 @@ module "bastion_role" {
 }
 
 #---------------------------------------
+# django(execution) ecs IAM ROLE
+#---------------------------------------
+module "django_execution_role" {
+  source = "../../modules/iam"
+  role_name = "RL-django-execution-${local.env}"
+  customer_role_name = ["AmazonECSTaskExecutionRolePolicy"]
+}
+
+#---------------------------------------
 # bastion SG
 #---------------------------------------
 module "bastion_sg" {
