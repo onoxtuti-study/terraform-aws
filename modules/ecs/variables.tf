@@ -10,7 +10,11 @@ variable "image_url" {
   type = string
 }
 
-variable "iam_arn" {
+variable "execution_iam_arn" {
+  type = string
+}
+
+variable "task_iam_arn" {
   type = string
 }
 
@@ -22,6 +26,6 @@ variable "sg_id" {
   type = list(string)
 }
 
-variable "alb_target_group_arn" {
+variable "trg_arn" {
   type = string
 }

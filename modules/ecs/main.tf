@@ -12,11 +12,13 @@ resource "aws_ecs_task_definition" "define" {
   container_definitions = jsonencode([
     {
       name      = "django"
-      image     = ver.image_url
+      image     = var.image_url
       requires_compatibilities = ["FARGATE"]
       network_mode = "awsvpc"
       cpu       = 512
       memory    = 1024
+      execution_role_arn = var.execution_iam_arn
+      # task_role_arn = var.task_iam_arn
       essential = true
       portMappings = [
         {
@@ -42,7 +44,7 @@ resource "aws_ecs_service" "sv-csweb" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.django.arn
+    target_group_arn = var.trg_arn
     container_name   = "django"   
     container_port   = 8000      
   }

@@ -287,3 +287,13 @@ module "django_repo" {
   source = "../../modules/ecr"
   name = "django"
 }
+
+#---------------------------------------
+# ECS Django
+#---------------------------------------
+module "djangoo_ecs" {
+  source = "../../modules/ecs"
+  service_name = "django"
+  container_name = "WEB-${local.env}"
+  iam_arn = 
+}
