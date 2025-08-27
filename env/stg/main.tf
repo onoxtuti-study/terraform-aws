@@ -171,6 +171,17 @@ module "bastion_sg" {
 }
 
 #---------------------------------------
+# ECS SG
+#---------------------------------------
+module "ecs_sg" {
+  source = "../../modules/sg"
+  vpc_id  = module.first_vpc.vpc_id
+  sg_name = "ecs-${local.env}"
+  description = "ecs django"
+  sg_id = module.alb_sg.id
+}
+
+#---------------------------------------
 # bat SG
 #---------------------------------------
 module "bat_sg" {
@@ -300,17 +311,13 @@ module "django_repo" {
 #---------------------------------------
 # ECS Django
 #---------------------------------------
-
-#---------------------------------------
-# ECS Django
-#---------------------------------------
 module "django_container" {
   source = "../../modules/ecs"
   service_name = "svc-django"
   trg_arn = module.alb.trg_arn
   image_url = "023299849488.dkr.ecr.ap-northeast-1.amazonaws.com/django:STG"
-  execution_iam_arn = module.django_execution_role.id
+  execution_iam_arn = module.django_execution_role.arn
   container_name = "django"
-  subnets_id = [module.sb_front-1a.id, module.module.sb_front-1c.id]
-  sg_id = []
+  subnets_id = [module.sb_front-1a.id, module.sb_front-1c.id]
+  sg_id = [module.ecs_sg.id]
 }
