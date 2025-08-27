@@ -1,4 +1,4 @@
-# resource "aws_ecs_cluster" "csweb" {
+# resource "aws_ecs_cluster" "cluster" {
 #   name = var.container_name
 
 #   setting {
@@ -12,7 +12,7 @@
 #   container_definitions = jsonencode([
 #     {
 #       name      = "django"
-#       image     = ver.image_url
+#       image     = var.image_url
 #       requires_compatibilities = ["FARGATE"]
 #       network_mode = "awsvpc"
 #       cpu       = 512
@@ -28,9 +28,9 @@
 #   ])
 # }
 
-# resource "aws_ecs_service" "sv-csweb" {
+# resource "aws_ecs_service" "service" {
 #   name            = var.service_name
-#   cluster         = aws_ecs_cluster.csweb.id
+#   cluster         = aws_ecs_cluster.cluster.id
 #   task_definition = aws_ecs_task_definition.define.arn
 #   desired_count   = 2
 #   launch_type     = "FARGATE"

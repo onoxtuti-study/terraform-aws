@@ -171,6 +171,17 @@ module "bastion_sg" {
 }
 
 #---------------------------------------
+# ECS SG
+#---------------------------------------
+module "ecs_sg" {
+  source = "../../modules/sg"
+  vpc_id  = module.first_vpc.vpc_id
+  sg_name = "ecs-${local.env}"
+  description = "ecs django"
+  sg_id = module.alb_sg.id
+}
+
+#---------------------------------------
 # bat SG
 #---------------------------------------
 module "bat_sg" {
