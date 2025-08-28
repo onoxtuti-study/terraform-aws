@@ -320,4 +320,11 @@ module "django_container" {
   container_name = "django"
   subnets_id = [module.sb_front-1a.id, module.sb_front-1c.id]
   sg_id = [module.ecs_sg.id]
+
+#---------------------------------------
+# ECS CloudWatchLogGroup
+#---------------------------------------
+module "django_log_group" {
+  source = "../../modules/cloudwatchlogs"
+  name = "/ecs/django"
 }
