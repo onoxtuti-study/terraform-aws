@@ -310,6 +310,20 @@ module "django_repo" {
 }
 
 #---------------------------------------
+# ECS Django
+#---------------------------------------
+module "django_container" {
+  source = "../../modules/ecs"
+  service_name = "svc-django"
+  trg_arn = module.alb.trg_arn
+  image_url = "023299849488.dkr.ecr.ap-northeast-1.amazonaws.com/django:STG"
+  execution_iam_arn = module.django_execution_role.arn
+  container_name = "django"
+  subnets_id = [module.sb_front-1a.id, module.sb_front-1c.id]
+  sg_id = [module.ecs_sg.id]
+}
+
+#---------------------------------------
 # ECS CloudWatchLogGroup
 #---------------------------------------
 module "django_log_group" {

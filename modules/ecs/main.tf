@@ -1,49 +1,58 @@
-# resource "aws_ecs_cluster" "cluster" {
-#   name = var.container_name
+resource "aws_ecs_cluster" "cluster" {
+  name = var.container_name
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+}
 
-#   setting {
-#     name  = "containerInsights"
-#     value = "enabled"
-#   }
-# }
+resource "aws_ecs_task_definition" "define" {
+  family                   = "service"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = 512
+  memory                   = 1024
+  execution_role_arn       = var.execution_iam_arn
 
-# resource "aws_ecs_task_definition" "define" {
-#   family = "service"
-#   container_definitions = jsonencode([
-#     {
-#       name      = "django"
-#       image     = var.image_url
-#       requires_compatibilities = ["FARGATE"]
-#       network_mode = "awsvpc"
-#       cpu       = 512
-#       memory    = 1024
-#       essential = true
-#       portMappings = [
-#         {
-#           containerPort = 8000
-#           hostPort      = 8000
-#         }
-#         ]
-#     }
-#   ])
-# }
+  container_definitions = jsonencode([
+    {
+      name      = "django"
+      image     = var.image_url
+      essential = true
+      portMappings = [
+        {
+          containerPort = 8000
+          hostPort      = 8000
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/django"
+          awslogs-region        = "ap-northeast-1"
+          awslogs-stream-prefix = "ecs"
+        }
+      }
+    }
+  ])
+}
 
-# resource "aws_ecs_service" "service" {
-#   name            = var.service_name
-#   cluster         = aws_ecs_cluster.cluster.id
-#   task_definition = aws_ecs_task_definition.define.arn
-#   desired_count   = 2
-#   launch_type     = "FARGATE"
+resource "aws_ecs_service" "service" {
+  name            = var.service_name
+  cluster         = aws_ecs_cluster.cluster.id
+  task_definition = aws_ecs_task_definition.define.arn
+  desired_count   = 2
+  launch_type     = "FARGATE"
 
-#   network_configuration {
-#     subnets         = var.subnets.id
-#     security_groups = ver.sg_id
-#     assign_public_ip = true
-#   }
+  network_configuration {
+    subnets         = var.subnets_id
+    security_groups = var.sg_id
+    assign_public_ip = true
+  }
 
-#   load_balancer {
-#     target_group_arn = aws_lb_target_group.django.arn
-#     container_name   = "django"   
-#     container_port   = 8000      
-#   }
-# }
+  load_balancer {
+    target_group_arn = var.trg_arn
+    container_name   = "django"   
+    container_port   = 8000      
+  }
+}
