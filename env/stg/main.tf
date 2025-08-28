@@ -157,6 +157,7 @@ module "django_execution_role" {
   source = "../../modules/iam"
   role_name = "RL-django-execution-${local.env}"
   customer_role_name = ["AmazonECSTaskExecutionRolePolicy"]
+  service = "ecs"
 }
 
 #---------------------------------------

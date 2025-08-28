@@ -7,5 +7,5 @@ output "arn" {
 }
 
 output "profile_name" {
-  value = aws_iam_instance_profile.role_profile.name
+  value = try(aws_iam_instance_profile.role_profile[0].name, null)
 }
