@@ -307,3 +307,11 @@ module "django_repo" {
   source = "../../modules/ecr"
   name = "django"
 }
+
+#---------------------------------------
+# ECS CloudWatchLogGroup
+#---------------------------------------
+module "django_log_group" {
+  source = "../../modules/cloudwatchlogs"
+  name = "/ecs/django"
+}
