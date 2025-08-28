@@ -1,4 +1,3 @@
-cloudwatchlogの作成が必要
 resource "aws_ecs_cluster" "cluster" {
   name = var.container_name
   setting {
