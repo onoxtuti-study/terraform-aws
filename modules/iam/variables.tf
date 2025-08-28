@@ -6,6 +6,11 @@ variable "customer_role_name" {
   type = list(string)
 }
 
+variable "service" {
+  type = string
+  default = null
+}
+
 variable "iam_role_policy_map" {
     type = map(string)
     default = {
