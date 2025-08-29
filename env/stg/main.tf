@@ -141,14 +141,14 @@ module "front_route_1c" {
   gw_type = module.natg.gw_type
 }
 
-#---------------------------------------
-# bastion EC2 IAM ROLE
-#---------------------------------------
-module "bastion_role" {
-  source = "../../modules/iam"
-  role_name = "RL-bastion-${local.env}"
-  customer_role_name = ["AmazonEC2FullAccess", "AmazonSSMManagedInstanceCore"]
-}
+# #---------------------------------------
+# # bastion EC2 IAM ROLE
+# #---------------------------------------
+# module "bastion_role" {
+#   source = "../../modules/iam"
+#   role_name = "RL-bastion-${local.env}"
+#   customer_role_name = ["AmazonEC2FullAccess", "AmazonSSMManagedInstanceCore"]
+# }
 
 #---------------------------------------
 # django(execution) ecs IAM ROLE
@@ -160,16 +160,16 @@ module "django_execution_role" {
   service = "ecs"
 }
 
-#---------------------------------------
-# bastion SG
-#---------------------------------------
-module "bastion_sg" {
-  source = "../../modules/sg"
-  vpc_id  = module.first_vpc.vpc_id
-  open_ip = var.bastion_open_ip
-  sg_name = "bastion-${local.env}"
-  description = "bastion ec2"
-}
+# #---------------------------------------
+# # bastion SG
+# #---------------------------------------
+# module "bastion_sg" {
+#   source = "../../modules/sg"
+#   vpc_id  = module.first_vpc.vpc_id
+#   open_ip = var.bastion_open_ip
+#   sg_name = "bastion-${local.env}"
+#   description = "bastion ec2"
+# }
 
 #---------------------------------------
 # ECS SG
@@ -182,27 +182,27 @@ module "ecs_sg" {
   sg_id = module.alb_sg.id
 }
 
-#---------------------------------------
-# bat SG
-#---------------------------------------
-module "bat_sg" {
-  source = "../../modules/sg"
-  vpc_id  = module.first_vpc.vpc_id
-  open_ip = concat([module.sb_dmz-1a.ip], lookup(var.bat_open_ip_map, local.env, []))
-  sg_name = "bat-${local.env}"
-  description = "bat ec2"
-}
+# #---------------------------------------
+# # bat SG
+# #---------------------------------------
+# module "bat_sg" {
+#   source = "../../modules/sg"
+#   vpc_id  = module.first_vpc.vpc_id
+#   open_ip = concat([module.sb_dmz-1a.ip], lookup(var.bat_open_ip_map, local.env, []))
+#   sg_name = "bat-${local.env}"
+#   description = "bat ec2"
+# }
 
-#---------------------------------------
-# RDS SG
-#---------------------------------------
-module "RDS_sg" {
-  source = "../../modules/sg"
-  vpc_id  = module.first_vpc.vpc_id
-  open_ip = [module.sb_front-1a.cidr_block, module.sb_front-1c.cidr_block]
-  sg_name = "rds-${local.env}"
-  description = "rds"
-}
+# #---------------------------------------
+# # RDS SG
+# #---------------------------------------
+# module "RDS_sg" {
+#   source = "../../modules/sg"
+#   vpc_id  = module.first_vpc.vpc_id
+#   open_ip = [module.sb_front-1a.cidr_block, module.sb_front-1c.cidr_block]
+#   sg_name = "rds-${local.env}"
+#   description = "rds"
+# }
 
 #---------------------------------------
 # ALB SG
@@ -215,31 +215,31 @@ module "alb_sg" {
   description = "alb"
 }
 
-#---------------------------------------
-# bastion EC2
-#---------------------------------------
-module "bastion_ec2" {
-    source = "../../modules/ec2"
-    ec2_name = "bastion-${local.env}"
-    profile = module.bastion_role.profile_name
-    sg_id = [module.bastion_sg.id]
-    subnet_id = module.sb_dmz-1a.id
-    associate_public_ip_address = true
-    key_name = "onozawa-bastion"
-}
+# #---------------------------------------
+# # bastion EC2
+# #---------------------------------------
+# module "bastion_ec2" {
+#     source = "../../modules/ec2"
+#     ec2_name = "bastion-${local.env}"
+#     profile = module.bastion_role.profile_name
+#     sg_id = [module.bastion_sg.id]
+#     subnet_id = module.sb_dmz-1a.id
+#     associate_public_ip_address = true
+#     key_name = "onozawa-bastion"
+# }
 
-#---------------------------------------
-# db-client EC2
-#---------------------------------------
-module "db-client_ec2" {
-    source = "../../modules/ec2"
-    ec2_name = "db-client-${local.env}"
-    profile = module.bastion_role.profile_name
-    sg_id = [module.bat_sg.id]
-    subnet_id = module.sb_front-1a.id
-    associate_public_ip_address = true
-    key_name = "onozawa-front"
-}
+# #---------------------------------------
+# # db-client EC2
+# #---------------------------------------
+# module "db-client_ec2" {
+#     source = "../../modules/ec2"
+#     ec2_name = "db-client-${local.env}"
+#     profile = module.bastion_role.profile_name
+#     sg_id = [module.bat_sg.id]
+#     subnet_id = module.sb_front-1a.id
+#     associate_public_ip_address = true
+#     key_name = "onozawa-front"
+# }
 
 #---------------------------------------
 # ALB
@@ -254,20 +254,22 @@ module "alb" {
   ]
   listener_name = "django"
   vpc_id = module.first_vpc.vpc_id
+  certificate_arn = var.acm_django_arn
 }
-#---------------------------------------
-# bat EC2
-#---------------------------------------
-module "bat_ec2" {
-    source = "../../modules/ec2"
-    ec2_name = "bat-${local.env}"
-    profile = module.bastion_role.profile_name
-    sg_id = [module.bat_sg.id]
-    subnet_id = module.sb_front-1a.id
-    associate_public_ip_address = true
-    key_name = "onozawa-front"
-    user_data = templatefile("add_ansible.txt",{})
-}
+
+# #---------------------------------------
+# # bat EC2
+# #---------------------------------------
+# module "bat_ec2" {
+#     source = "../../modules/ec2"
+#     ec2_name = "bat-${local.env}"
+#     profile = module.bastion_role.profile_name
+#     sg_id = [module.bat_sg.id]
+#     subnet_id = module.sb_front-1a.id
+#     associate_public_ip_address = true
+#     key_name = "onozawa-front"
+#     user_data = templatefile("add_ansible.txt",{})
+# }
 
 #---------------------------------------
 # NATG EIP
@@ -289,17 +291,17 @@ module "natg" {
   gw_type = "natgw"
 }
 
-#---------------------------------------
-# RDS PostgreSQL
-#---------------------------------------
-module "app_info" {
-  source = "../../modules/rds"
-  name = "eweb-${local.env}"
-  subnet = module.db_subnet_group.id
-  db_name = var.db_config[local.env].name
-  db_pass = var.db_config[local.env].pass
-  sg = module.RDS_sg.id
-}
+# #---------------------------------------
+# # RDS PostgreSQL
+# #---------------------------------------
+# module "app_info" {
+#   source = "../../modules/rds"
+#   name = "eweb-${local.env}"
+#   subnet = module.db_subnet_group.id
+#   db_name = var.db_config[local.env].name
+#   db_pass = var.db_config[local.env].pass
+#   sg = module.RDS_sg.id
+# }
 
 #---------------------------------------
 # ECR Django
