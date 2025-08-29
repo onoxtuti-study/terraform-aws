@@ -332,3 +332,14 @@ module "django_log_group" {
   source = "../../modules/cloudwatchlogs"
   name = "/ecs/django"
 }
+
+#---------------------------------------
+# ECS Route53
+#---------------------------------------
+module "django_route53" {
+  source = "../../modules/route53"
+  name = "DailyReport.local"
+  vpc_id = module.first_vpc.vpc_id
+  dns_name = module.alb.dns
+  zone_id = module.alb.zone_id
+}
