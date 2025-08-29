@@ -254,6 +254,7 @@ module "alb" {
   ]
   listener_name = "django"
   vpc_id = module.first_vpc.vpc_id
+  certificate_arn = module.django_acm.arn
 }
 # #---------------------------------------
 # # bat EC2
@@ -329,4 +330,8 @@ module "django_container" {
 module "django_log_group" {
   source = "../../modules/cloudwatchlogs"
   name = "/ecs/django"
+}
+
+module "django_acm" {
+  source = "../../modules/acm"
 }

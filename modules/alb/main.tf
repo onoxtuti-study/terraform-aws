@@ -24,16 +24,18 @@ resource "aws_lb" "alb" {
 
 resource "aws_lb_target_group" "trg" {
   name        = var.listener_name
-  port        = 80
+  port        = 443
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id
 }
 
-resource "aws_lb_listener" "http" {
+resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.alb.arn
-  port              = 80
-  protocol          = "HTTP"
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.certificate_arn
 
   default_action {
     type             = "forward"
