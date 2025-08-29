@@ -22,8 +22,8 @@ resource "aws_security_group_rule" "ingress" {
   for_each = var.sg_name == "ecs" ? {} : { for index, value in var.open_ip : index => value }
 
   type              = "ingress"
-  from_port         = can(regex("rds", var.sg_name)) ? 5432 : (can(regex("alb", var.sg_name)) ? 80 : 22)
-  to_port           = can(regex("rds", var.sg_name)) ? 5432 : (can(regex("alb", var.sg_name)) ? 80 : 22)
+  from_port         = can(regex("rds", var.sg_name)) ? 5432 : (can(regex("alb", var.sg_name)) ? 443 : 22)
+  to_port           = can(regex("rds", var.sg_name)) ? 5432 : (can(regex("alb", var.sg_name)) ? 443 : 22)
   protocol          = "tcp"
   cidr_blocks       = [each.value]
   security_group_id = aws_security_group.sg.id

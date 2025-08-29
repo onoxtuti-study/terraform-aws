@@ -254,7 +254,9 @@ module "alb" {
   ]
   listener_name = "django"
   vpc_id = module.first_vpc.vpc_id
+  certificate_arn = var.acm_django_arn
 }
+
 # #---------------------------------------
 # # bat EC2
 # #---------------------------------------
