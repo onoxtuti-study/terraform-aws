@@ -24,10 +24,19 @@ resource "aws_lb" "alb" {
 
 resource "aws_lb_target_group" "trg" {
   name        = var.listener_name
-  port        = 443
+  port        = 8000
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id
+    health_check {
+    path                = "/daily_report/"
+    protocol            = "HTTP"
+    matcher             = "200-299"
+    interval            = 30        
+    timeout             = 5
+    healthy_threshold   = 3
+    unhealthy_threshold = 2
+  }
 }
 
 resource "aws_lb_listener" "https" {
