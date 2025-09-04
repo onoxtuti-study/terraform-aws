@@ -6,7 +6,11 @@ variable "service_name" {
   type = string
 }
 
-variable "image_url" {
+variable "django_image_url" {
+  type = string
+}
+
+variable "nginx_image_url" {
   type = string
 }
 

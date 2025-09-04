@@ -312,13 +312,22 @@ module "django_repo" {
 }
 
 #---------------------------------------
+# ECR Nginx
+#---------------------------------------
+module "nginx_repo" {
+  source = "../../modules/ecr"
+  name = "nginx"
+}
+
+#---------------------------------------
 # ECS Django
 #---------------------------------------
 module "django_container" {
   source = "../../modules/ecs"
   service_name = "svc-django"
   trg_arn = module.alb.trg_arn
-  image_url = "023299849488.dkr.ecr.ap-northeast-1.amazonaws.com/django:STG"
+  django_image_url = "023299849488.dkr.ecr.ap-northeast-1.amazonaws.com/django:STG"
+  nginx_image_url = "023299849488.dkr.ecr.ap-northeast-1.amazonaws.com/nginx:STG"
   execution_iam_arn = module.django_execution_role.arn
   container_name = "django"
   subnets_id = [module.sb_front-1a.id, module.sb_front-1c.id]

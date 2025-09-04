@@ -17,18 +17,41 @@ resource "aws_ecs_task_definition" "define" {
   container_definitions = jsonencode([
     {
       name      = "django"
-      image     = var.image_url
+      image     = var.django_image_url
       essential = true
       portMappings = [
         {
           containerPort = 8000
-          hostPort      = 8000
         }
       ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "/ecs/django"
+          awslogs-region        = "ap-northeast-1"
+          awslogs-stream-prefix = "ecs"
+        }
+      }
+    },
+    {
+      name = "nginx"
+      image = var.nginx_image_url
+      essential = true
+      portMappings = [
+        {
+          containerPort = 80
+        }
+      ]
+      dependsOn = [
+      {
+        containerName = "django"
+        condition     = "START"
+      }
+    ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group = "/ecs/django"
           awslogs-region        = "ap-northeast-1"
           awslogs-stream-prefix = "ecs"
         }
@@ -52,7 +75,7 @@ resource "aws_ecs_service" "service" {
 
   load_balancer {
     target_group_arn = var.trg_arn
-    container_name   = "django"   
-    container_port   = 8000      
+    container_name   = "nginx"   
+    container_port   = 80     
   }
 }
