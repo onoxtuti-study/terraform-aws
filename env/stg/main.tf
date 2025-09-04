@@ -160,6 +160,16 @@ module "django_execution_role" {
   service = "ecs"
 }
 
+#---------------------------------------
+# django(task role) ecs IAM ROLE
+#---------------------------------------
+module "django_task_role" {
+  source = "../../modules/iam"
+  role_name = "RL-django-task-${local.env}"
+  customer_role_name = ["AmazonSSMManagedInstanceCore"]
+  service = "ecs"
+}
+
 # #---------------------------------------
 # # bastion SG
 # #---------------------------------------
