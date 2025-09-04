@@ -18,9 +18,9 @@ variable "execution_iam_arn" {
   type = string
 }
 
-# variable "task_iam_arn" {
-#   type = string
-# }
+variable "task_iam_arn" {
+  type = string
+}
 
 variable "subnets_id" {
   type = list(string)

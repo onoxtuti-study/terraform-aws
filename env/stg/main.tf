@@ -339,6 +339,7 @@ module "django_container" {
   django_image_url = "023299849488.dkr.ecr.ap-northeast-1.amazonaws.com/django:STG"
   nginx_image_url = "023299849488.dkr.ecr.ap-northeast-1.amazonaws.com/nginx:STG"
   execution_iam_arn = module.django_execution_role.arn
+  task_iam_arn = module.django_task_role.arn
   container_name = "django"
   subnets_id = [module.sb_front-1a.id, module.sb_front-1c.id]
   sg_id = [module.ecs_sg.id]

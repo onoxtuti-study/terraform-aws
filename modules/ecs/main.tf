@@ -13,6 +13,7 @@ resource "aws_ecs_task_definition" "define" {
   cpu                      = 512
   memory                   = 1024
   execution_role_arn       = var.execution_iam_arn
+  task_role_arn = var.task_iam_arn
 
   container_definitions = jsonencode([
     {
