@@ -203,16 +203,16 @@ module "ecs_sg" {
 #   description = "bat ec2"
 # }
 
-# #---------------------------------------
-# # RDS SG
-# #---------------------------------------
-# module "RDS_sg" {
-#   source = "../../modules/sg"
-#   vpc_id  = module.first_vpc.vpc_id
-#   open_ip = [module.sb_front-1a.cidr_block, module.sb_front-1c.cidr_block]
-#   sg_name = "rds-${local.env}"
-#   description = "rds"
-# }
+#---------------------------------------
+# RDS SG
+#---------------------------------------
+module "RDS_sg" {
+  source = "../../modules/sg"
+  vpc_id  = module.first_vpc.vpc_id
+  open_ip = [module.sb_front-1a.cidr_block, module.sb_front-1c.cidr_block]
+  sg_name = "rds-${local.env}"
+  description = "rds"
+}
 
 #---------------------------------------
 # ALB SG
@@ -301,17 +301,17 @@ module "natg" {
   gw_type = "natgw"
 }
 
-# #---------------------------------------
-# # RDS PostgreSQL
-# #---------------------------------------
-# module "app_info" {
-#   source = "../../modules/rds"
-#   name = "eweb-${local.env}"
-#   subnet = module.db_subnet_group.id
-#   db_name = var.db_config[local.env].name
-#   db_pass = var.db_config[local.env].pass
-#   sg = module.RDS_sg.id
-# }
+#---------------------------------------
+# RDS PostgreSQL
+#---------------------------------------
+module "app_info" {
+  source = "../../modules/rds"
+  name = "eweb-${local.env}"
+  subnet = module.db_subnet_group.id
+  db_name = var.db_config[local.env].name
+  db_pass = var.db_config[local.env].pass
+  sg = module.RDS_sg.id
+}
 
 #---------------------------------------
 # ECR Django
