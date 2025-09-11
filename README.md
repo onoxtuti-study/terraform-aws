@@ -19,9 +19,6 @@ Terraformを使用してAWS上にリソースの構築。なお、構築する�
 - DBSubnetGroup
 - Route53
 
-- tfstateは環境(STG/PRD)ごとにS3バケットで管理 ※排他制御は未実施
-- 秘匿情報はGit管理から除外しS3バケットで管理
-
 ## 使用技術
 - Terraform v1.12.2
 - AWS provider v6.4.0
@@ -52,6 +49,8 @@ Terraformを使用してAWS上にリソースの構築。なお、構築する�
 ## 備考
 - EC2で使用するKeyPairについては、変更回数およびセキュリティの観点からTerraformの管理外
 - SSH接続はローカルMacからインターネット経由で確認済み (鍵情報はリポジトリに含まれておりません)
+- tfstateは環境(STG/PRD)ごとにS3バケットで管理 ※排他制御は未実施
+- 秘匿情報はGit管理から除外しS3バケットで管理
   
 ## 参考文献
 - 【入門】Terraformの基礎を90分で解説するチュートリアル (https://www.youtube.com/watch?v=h1MDCp7blmg)
