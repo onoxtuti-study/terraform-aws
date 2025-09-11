@@ -16,25 +16,46 @@ module "first_vpc" {
 }
 
 #---------------------------------------
-# DMZ Subnet
+# DMZ-1a Subnet
 #---------------------------------------
-module "sb_dmz" {
+module "sb_dmz-1a" {
   vpc_id = module.first_vpc.vpc_id
   source = "../../modules/subnet"
   env = "${local.env}"
-  area = "DMZ"
+  area = "DMZ-1a"
   subnet_name = "DMZ-${local.env}-1a"
+}
+#---------------------------------------
+# DMZ-1c Subnet
+#---------------------------------------
+module "sb_dmz-1c" {
+  vpc_id = module.first_vpc.vpc_id
+  source = "../../modules/subnet"
+  env = "${local.env}"
+  area = "DMZ-1c"
+  subnet_name = "DMZ-${local.env}-1c"
 }
 
 #---------------------------------------
-# FRONT Subnet
+# FRONT-1a Subnet
 #---------------------------------------
-module "sb_front" {
+module "sb_front-1a" {
   vpc_id = module.first_vpc.vpc_id
   source = "../../modules/subnet"
   env = "${local.env}"
-  area = "FRONT"
+  area = "FRONT-1a"
   subnet_name = "FRONT-${local.env}-1a"
+}
+
+#---------------------------------------
+# FRONT-1c Subnet
+#---------------------------------------
+module "sb_front-1c" {
+  vpc_id = module.first_vpc.vpc_id
+  source = "../../modules/subnet"
+  env = "${local.env}"
+  area = "FRONT-1c"
+  subnet_name = "FRONT-${local.env}-1c"
 }
 
 #---------------------------------------
@@ -69,61 +90,118 @@ module "db_subnet_group" {
 }
 
 #---------------------------------------
-# DMZ RT
+# DMZ-1a RT
 #---------------------------------------
-module "public_route" {
+module "public_route_1a" {
   source = "../../modules/routetable"
   vpc_id = module.first_vpc.vpc_id
   cidr_block = module.first_vpc.vpc_cidr
   gw_id = module.first_vpc.igw_id
-  subnet_id = module.sb_dmz.id
+  subnet_id = module.sb_dmz-1a.id
   rt_name = "rt-dmz-${local.env}"
   gw_type = module.first_vpc.gw_type
 }
 
 #---------------------------------------
-# FRONT RT
+# DMZ-1c RT
 #---------------------------------------
-module "front_route" {
+module "public_route_1c" {
+  source = "../../modules/routetable"
+  vpc_id = module.first_vpc.vpc_id
+  cidr_block = module.first_vpc.vpc_cidr
+  gw_id = module.first_vpc.igw_id
+  subnet_id = module.sb_dmz-1c.id
+  rt_name = "rt-dmz-${local.env}"
+  gw_type = module.first_vpc.gw_type
+}
+
+#---------------------------------------
+# FRONT-1a RT
+#---------------------------------------
+module "front_route_1a" {
   source = "../../modules/routetable"
   vpc_id = module.first_vpc.vpc_id
   cidr_block = module.first_vpc.vpc_cidr
   gw_id = module.natg.id
-  subnet_id = module.sb_front.id
+  subnet_id = module.sb_front-1a.id
   rt_name = "rt-front-${local.env}"
   gw_type = module.natg.gw_type
 }
 
 #---------------------------------------
-# bastion EC2 IAM ROLE
+# FRONT-1c RT
 #---------------------------------------
-module "bastion_role" {
+module "front_route_1c" {
+  source = "../../modules/routetable"
+  vpc_id = module.first_vpc.vpc_id
+  cidr_block = module.first_vpc.vpc_cidr
+  gw_id = module.natg.id
+  subnet_id = module.sb_front-1c.id
+  rt_name = "rt-front-${local.env}"
+  gw_type = module.natg.gw_type
+}
+
+# #---------------------------------------
+# # bastion EC2 IAM ROLE
+# #---------------------------------------
+# module "bastion_role" {
+#   source = "../../modules/iam"
+#   role_name = "RL-bastion-${local.env}"
+#   customer_role_name = ["AmazonEC2FullAccess", "AmazonSSMManagedInstanceCore"]
+# }
+
+#---------------------------------------
+# django(execution) ecs IAM ROLE
+#---------------------------------------
+module "django_execution_role" {
   source = "../../modules/iam"
-  role_name = "RL-bastion-${local.env}"
-  customer_role_name = ["AmazonEC2FullAccess", "AmazonSSMManagedInstanceCore"]
+  role_name = "RL-django-execution-${local.env}"
+  customer_role_name = ["AmazonECSTaskExecutionRolePolicy"]
+  service = "ecs"
 }
 
 #---------------------------------------
-# bastion SG
+# django(task role) ecs IAM ROLE
 #---------------------------------------
-module "bastion_sg" {
-  source = "../../modules/sg"
-  vpc_id  = module.first_vpc.vpc_id
-  open_ip = var.bastion_open_ip
-  sg_name = "bastion-${local.env}"
-  description = "bastion ec2"
+module "django_task_role" {
+  source = "../../modules/iam"
+  role_name = "RL-django-task-${local.env}"
+  customer_role_name = ["AmazonSSMManagedInstanceCore"]
+  service = "ecs"
 }
 
+# #---------------------------------------
+# # bastion SG
+# #---------------------------------------
+# module "bastion_sg" {
+#   source = "../../modules/sg"
+#   vpc_id  = module.first_vpc.vpc_id
+#   open_ip = var.bastion_open_ip
+#   sg_name = "bastion-${local.env}"
+#   description = "bastion ec2"
+# }
+
 #---------------------------------------
-# bat SG
+# ECS SG
 #---------------------------------------
-module "bat_sg" {
+module "ecs_sg" {
   source = "../../modules/sg"
   vpc_id  = module.first_vpc.vpc_id
-  open_ip = concat([module.sb_dmz.ip], lookup(var.bat_open_ip_map, local.env, []))
-  sg_name = "bat-${local.env}"
-  description = "bat ec2"
+  sg_name = "ecs-${local.env}"
+  description = "ecs django"
+  sg_id = module.alb_sg.id
 }
+
+# #---------------------------------------
+# # bat SG
+# #---------------------------------------
+# module "bat_sg" {
+#   source = "../../modules/sg"
+#   vpc_id  = module.first_vpc.vpc_id
+#   open_ip = concat([module.sb_dmz-1a.ip], lookup(var.bat_open_ip_map, local.env, []))
+#   sg_name = "bat-${local.env}"
+#   description = "bat ec2"
+# }
 
 #---------------------------------------
 # RDS SG
@@ -131,50 +209,77 @@ module "bat_sg" {
 module "RDS_sg" {
   source = "../../modules/sg"
   vpc_id  = module.first_vpc.vpc_id
-  open_ip = [module.sb_front.cidr_block]
+  open_ip = [module.sb_front-1a.cidr_block, module.sb_front-1c.cidr_block]
   sg_name = "rds-${local.env}"
   description = "rds"
 }
 
 #---------------------------------------
-# bastion EC2
+# ALB SG
 #---------------------------------------
-module "bastion_ec2" {
-    source = "../../modules/ec2"
-    ec2_name = "bastion-${local.env}"
-    profile = module.bastion_role.profile_name
-    sg_id = [module.bastion_sg.id]
-    subnet_id = module.sb_dmz.id
-    associate_public_ip_address = true
-    key_name = "onozawa-bastion"
+module "alb_sg" {
+  source = "../../modules/sg"
+  vpc_id  = module.first_vpc.vpc_id
+  open_ip = var.bastion_open_ip
+  sg_name = "alb-${local.env}"
+  description = "alb"
 }
 
-#---------------------------------------
-# db-client EC2
-#---------------------------------------
-module "db-client_ec2" {
-    source = "../../modules/ec2"
-    ec2_name = "db-client-${local.env}"
-    profile = module.bastion_role.profile_name
-    sg_id = [module.bat_sg.id]
-    subnet_id = module.sb_front.id
-    associate_public_ip_address = true
-    key_name = "onozawa-front"
-}
+# #---------------------------------------
+# # bastion EC2
+# #---------------------------------------
+# module "bastion_ec2" {
+#     source = "../../modules/ec2"
+#     ec2_name = "bastion-${local.env}"
+#     profile = module.bastion_role.profile_name
+#     sg_id = [module.bastion_sg.id]
+#     subnet_id = module.sb_dmz-1a.id
+#     associate_public_ip_address = true
+#     key_name = "onozawa-bastion"
+# }
+
+# #---------------------------------------
+# # db-client EC2
+# #---------------------------------------
+# module "db-client_ec2" {
+#     source = "../../modules/ec2"
+#     ec2_name = "db-client-${local.env}"
+#     profile = module.bastion_role.profile_name
+#     sg_id = [module.bat_sg.id]
+#     subnet_id = module.sb_front-1a.id
+#     associate_public_ip_address = true
+#     key_name = "onozawa-front"
+# }
 
 #---------------------------------------
-# bat EC2
+# ALB
 #---------------------------------------
-module "bat_ec2" {
-    source = "../../modules/ec2"
-    ec2_name = "bat-${local.env}"
-    profile = module.bastion_role.profile_name
-    sg_id = [module.bat_sg.id]
-    subnet_id = module.sb_front.id
-    associate_public_ip_address = true
-    key_name = "onozawa-front"
-    user_data = templatefile("add_ansible.txt",{})
+module "alb" {
+  source = "../../modules/alb"
+  name = "terraform-alb-${local.env}"
+  sg_id = module.alb_sg.id
+  subnet_id = [
+    module.sb_dmz-1a.id,
+    module.sb_dmz-1c.id
+  ]
+  listener_name = "django"
+  vpc_id = module.first_vpc.vpc_id
+  certificate_arn = var.acm_django_arn
 }
+
+# #---------------------------------------
+# # bat EC2
+# #---------------------------------------
+# module "bat_ec2" {
+#     source = "../../modules/ec2"
+#     ec2_name = "bat-${local.env}"
+#     profile = module.bastion_role.profile_name
+#     sg_id = [module.bat_sg.id]
+#     subnet_id = module.sb_front-1a.id
+#     associate_public_ip_address = true
+#     key_name = "onozawa-front"
+#     user_data = templatefile("add_ansible.txt",{})
+# }
 
 #---------------------------------------
 # NATG EIP
@@ -190,7 +295,7 @@ module "natg_eip" {
 module "natg" {
   source = "../../modules/natg"
   eip_id = module.natg_eip.id
-  subnet_id = module.sb_dmz.id
+  subnet_id = module.sb_dmz-1a.id
   name = "natg-terraform-${local.env}"
   depends_on = [module.natg_eip]
   gw_type = "natgw"
@@ -206,4 +311,55 @@ module "app_info" {
   db_name = var.db_config[local.env].name
   db_pass = var.db_config[local.env].pass
   sg = module.RDS_sg.id
+}
+
+#---------------------------------------
+# ECR Django
+#---------------------------------------
+module "django_repo" {
+  source = "../../modules/ecr"
+  name = "django"
+}
+
+#---------------------------------------
+# ECR Nginx
+#---------------------------------------
+module "nginx_repo" {
+  source = "../../modules/ecr"
+  name = "nginx"
+}
+
+#---------------------------------------
+# ECS Django
+#---------------------------------------
+module "django_container" {
+  source = "../../modules/ecs"
+  service_name = "svc-django"
+  trg_arn = module.alb.trg_arn
+  django_image_url = "023299849488.dkr.ecr.ap-northeast-1.amazonaws.com/django:STG"
+  nginx_image_url = "023299849488.dkr.ecr.ap-northeast-1.amazonaws.com/nginx:STG"
+  execution_iam_arn = module.django_execution_role.arn
+  task_iam_arn = module.django_task_role.arn
+  container_name = "django"
+  subnets_id = [module.sb_front-1a.id, module.sb_front-1c.id]
+  sg_id = [module.ecs_sg.id]
+}
+
+#---------------------------------------
+# ECS CloudWatchLogGroup
+#---------------------------------------
+module "django_log_group" {
+  source = "../../modules/cloudwatchlogs"
+  name = "/ecs/django"
+}
+
+#---------------------------------------
+# ECS Route53
+#---------------------------------------
+module "django_route53" {
+  source = "../../modules/route53"
+  name = "DailyReport.local"
+  vpc_id = module.first_vpc.vpc_id
+  dns_name = module.alb.dns
+  zone_id = module.alb.zone_id
 }

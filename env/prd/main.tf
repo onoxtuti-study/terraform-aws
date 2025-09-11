@@ -94,36 +94,36 @@ module "front_route" {
   gw_type = module.natg.gw_type
 }
 
-#---------------------------------------
-# bastion EC2 IAM ROLE
-#---------------------------------------
-module "bastion_role" {
-  source = "../../modules/iam"
-  role_name = "RL-bastion-${local.env}"
-  customer_role_name = ["AmazonEC2FullAccess", "AmazonSSMManagedInstanceCore"]
-}
+# #---------------------------------------
+# # bastion EC2 IAM ROLE
+# #---------------------------------------
+# module "bastion_role" {
+#   source = "../../modules/iam"
+#   role_name = "RL-bastion-${local.env}"
+#   customer_role_name = ["AmazonEC2FullAccess", "AmazonSSMManagedInstanceCore"]
+# }
 
-#---------------------------------------
-# bastion SG
-#---------------------------------------
-module "bastion_sg" {
-  source = "../../modules/sg"
-  vpc_id  = module.first_vpc.vpc_id
-  open_ip = var.bastion_open_ip
-  sg_name = "bastion-${local.env}"
-  description = "bastion ec2"
-}
+# #---------------------------------------
+# # bastion SG
+# #---------------------------------------
+# module "bastion_sg" {
+#   source = "../../modules/sg"
+#   vpc_id  = module.first_vpc.vpc_id
+#   open_ip = var.bastion_open_ip
+#   sg_name = "bastion-${local.env}"
+#   description = "bastion ec2"
+# }
 
-#---------------------------------------
-# bat SG
-#---------------------------------------
-module "bat_sg" {
-  source = "../../modules/sg"
-  vpc_id  = module.first_vpc.vpc_id
-  open_ip = concat([module.sb_dmz.ip], lookup(var.bat_open_ip_map, local.env, []))
-  sg_name = "bat-${local.env}"
-  description = "bat ec2"
-}
+# #---------------------------------------
+# # bat SG
+# #---------------------------------------
+# module "bat_sg" {
+#   source = "../../modules/sg"
+#   vpc_id  = module.first_vpc.vpc_id
+#   open_ip = concat([module.sb_dmz.ip], lookup(var.bat_open_ip_map, local.env, []))
+#   sg_name = "bat-${local.env}"
+#   description = "bat ec2"
+# }
 
 # #---------------------------------------
 # # RDS SG
@@ -136,45 +136,56 @@ module "bat_sg" {
 #   description = "rds"
 # }
 
-#---------------------------------------
-# bastion EC2
-#---------------------------------------
-module "bastion_ec2" {
-    source = "../../modules/ec2"
-    ec2_name = "bastion-${local.env}"
-    profile = module.bastion_role.profile_name
-    sg_id = [module.bastion_sg.id]
-    subnet_id = module.sb_dmz.id
-    associate_public_ip_address = true
-    key_name = "onozawa-bastion"
-}
+# #---------------------------------------
+# # ALB SG
+# #---------------------------------------
+# module "alb_sg" {
+#   source = "../../modules/sg"
+#   vpc_id  = module.first_vpc.vpc_id
+#   open_ip = var.bastion_open_ip
+#   sg_name = "alb-${local.env}"
+#   description = "alb"
+# }
 
-#---------------------------------------
-# db-client EC2
-#---------------------------------------
-module "db-client_ec2" {
-    source = "../../modules/ec2"
-    ec2_name = "db-client-${local.env}"
-    profile = module.bastion_role.profile_name
-    sg_id = [module.bat_sg.id]
-    subnet_id = module.sb_front.id
-    associate_public_ip_address = true
-    key_name = "onozawa-front"
-}
+# #---------------------------------------
+# # bastion EC2
+# #---------------------------------------
+# module "bastion_ec2" {
+#     source = "../../modules/ec2"
+#     ec2_name = "bastion-${local.env}"
+#     profile = module.bastion_role.profile_name
+#     sg_id = [module.bastion_sg.id]
+#     subnet_id = module.sb_dmz.id
+#     associate_public_ip_address = true
+#     key_name = "onozawa-bastion"
+# }
 
-#---------------------------------------
-# bat EC2
-#---------------------------------------
-module "bat_ec2" {
-    source = "../../modules/ec2"
-    ec2_name = "bat-${local.env}"
-    profile = module.bastion_role.profile_name
-    sg_id = [module.bat_sg.id]
-    subnet_id = module.sb_front.id
-    associate_public_ip_address = true
-    key_name = "onozawa-front"
-    user_data = templatefile("add_ansible.txt",{})
-}
+# #---------------------------------------
+# # db-client EC2
+# #---------------------------------------
+# module "db-client_ec2" {
+#     source = "../../modules/ec2"
+#     ec2_name = "db-client-${local.env}"
+#     profile = module.bastion_role.profile_name
+#     sg_id = [module.bat_sg.id]
+#     subnet_id = module.sb_front.id
+#     associate_public_ip_address = true
+#     key_name = "onozawa-front"
+# }
+
+# #---------------------------------------
+# # bat EC2
+# #---------------------------------------
+# module "bat_ec2" {
+#     source = "../../modules/ec2"
+#     ec2_name = "bat-${local.env}"
+#     profile = module.bastion_role.profile_name
+#     sg_id = [module.bat_sg.id]
+#     subnet_id = module.sb_front.id
+#     associate_public_ip_address = true
+#     key_name = "onozawa-front"
+#     user_data = templatefile("add_ansible.txt",{})
+# }
 
 #---------------------------------------
 # NATG EIP

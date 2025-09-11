@@ -15,3 +15,7 @@ variable "db_config" {
     pass = string
   }))
 }
+
+variable "acm_django_arn" {
+  type = string
+}
