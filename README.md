@@ -44,7 +44,7 @@ Terraformを使用してAWS上にリソースの構築。なお、構築する�
 - GitHub Secretsで運用
 
 ## 今後の予定
-- AWS EKSを構築しながらK8sの勉強
+- Terraform Cloudを学ぶ
 
 ## 備考
 - EC2で使用するKeyPairについては、変更回数およびセキュリティの観点からTerraformの管理外
