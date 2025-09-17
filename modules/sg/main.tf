@@ -18,8 +18,19 @@ resource "aws_security_group_rule" "ecs_ingress" {
   description       = "Allow ALB to ECS"
 }
 
+resource "aws_security_group_rule" "web_ingress" {
+  count             = can(regex("web", var.sg_name)) ? 1 : 0
+  type              = "ingress"
+  from_port         = 80        
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks  = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.sg.id
+  description       = "Allow http ec2"
+}
+
 resource "aws_security_group_rule" "ingress" {
-  for_each = var.sg_name == "ecs" ? {} : { for index, value in var.open_ip : index => value }
+  for_each = can(regex("(ecs|web)", var.sg_name)) ? {} : { for index, value in var.open_ip : index => value }
 
   type              = "ingress"
   from_port         = can(regex("rds", var.sg_name)) ? 5432 : (can(regex("alb", var.sg_name)) ? 443 : 22)

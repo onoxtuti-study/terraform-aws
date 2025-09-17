@@ -203,6 +203,16 @@ module "bat_sg" {
   description = "bat ec2"
 }
 
+#---------------------------------------
+# web SG
+#---------------------------------------
+module "web_sg" {
+  source = "../../modules/sg"
+  vpc_id  = module.first_vpc.vpc_id
+  open_ip = concat([module.sb_dmz-1a.ip], lookup(var.bat_open_ip_map, local.env, []))
+  sg_name = "web-${local.env}"
+  description = "web ec2"
+}
 # #---------------------------------------
 # # RDS SG
 # #---------------------------------------
@@ -236,6 +246,19 @@ module "bastion_ec2" {
     subnet_id = module.sb_dmz-1a.id
     associate_public_ip_address = true
     key_name = "onozawa-bastion"
+}
+
+#---------------------------------------
+# web EC2
+#---------------------------------------
+module "web_ec2" {
+    source = "../../modules/ec2"
+    ec2_name = "web-${local.env}"
+    profile = module.bastion_role.profile_name
+    sg_id = [module.web_sg.id]
+    subnet_id = module.sb_front-1a.id
+    associate_public_ip_address = true
+    key_name = "onozawa-front"
 }
 
 # #---------------------------------------
