@@ -10,6 +10,7 @@ terraform {
     bucket = "onozawa-terraform-tfstate"
     key    = "stg_terraform.tfstate"
     region = "ap-northeast-1"
+    use_lockfile = true
   }
 }
 
